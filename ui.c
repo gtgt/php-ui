@@ -74,7 +74,6 @@
 #include <classes/matrix.h>
 
 #include <classes/descriptor.h>
-#include <classes/font.h>
 #include <classes/layout.h>
 
 #define PHP_UI_LOOP	1<<0
@@ -228,7 +227,6 @@ PHP_MINIT_FUNCTION(ui)
 	PHP_MINIT(UI_DrawMatrix)(INIT_FUNC_ARGS_PASSTHRU);
 
 	PHP_MINIT(UI_DrawTextFontDescriptor)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(UI_DrawTextFont)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawTextLayout)(INIT_FUNC_ARGS_PASSTHRU);
 
 	php_ui_control_finalize();
@@ -376,35 +374,11 @@ PHP_FUNCTION(UI_quit)
 	uiQuit();
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_draw_font_families_info, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-/* {{{ proto array UI\Draw\Text\fontFamilies(void) */
-PHP_FUNCTION(fontFamilies)
-{
-	uiDrawFontFamilies* families;
-	int familiy = 0;
-
-	if (zend_parse_parameters_none() != SUCCESS) {
-		return;
-	}
-
-	array_init(return_value);
-
-	families = uiDrawListFontFamilies();
-	for (familiy = 0; familiy < uiDrawFontFamiliesNumFamilies(families); familiy++) {
-		add_next_index_string(return_value, uiDrawFontFamiliesFamily(families, familiy));
-	}
-
-	uiDrawFreeFontFamilies(families);
-} /* }}} */
-
 /* {{{ ui_functions[]
  */
 const zend_function_entry ui_functions[] = {
 	ZEND_NS_NAMED_FE("UI", run, zif_UI_run, php_ui_run_info)
 	ZEND_NS_NAMED_FE("UI", quit, zif_UI_quit, php_ui_quit_info)
-	ZEND_NS_FE("UI\\Draw\\Text\\Font", fontFamilies, php_ui_draw_font_families_info)
 	PHP_FE_END
 };
 /* }}} */
