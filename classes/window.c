@@ -119,6 +119,9 @@ void php_ui_window_resized_handler(uiWindow *w, void *arg) {
 	}
 }
 
+ZEND_BEGIN_ARG_INFO_EX(php_ui_window_void_info, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(php_ui_window_construct_info, 0, 0, 2)
 	ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
 	ZEND_ARG_OBJ_INFO(0, size, UI\\Size, 0)
@@ -181,6 +184,18 @@ PHP_METHOD(Window, getTitle)
 	}
 
 	RETURN_STRING(uiWindowTitle(win->w));	
+} /* }}} */
+
+/* {{{ proto void Window::center(void) */
+PHP_METHOD(Window, center) 
+{
+	php_ui_window_t *win = php_ui_window_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	uiWindowCenter(win->w);
 } /* }}} */
 
 ZEND_BEGIN_ARG_INFO_EX(php_ui_window_set_size_info, 0, 0, 1)
@@ -477,6 +492,7 @@ const zend_function_entry php_ui_window_methods[] = {
 	PHP_ME(Window, __construct,             php_ui_window_construct_info,       ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setTitle,                php_ui_window_set_title_info,       ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getTitle,                php_ui_window_get_title_info,       ZEND_ACC_PUBLIC)
+	PHP_ME(Window, center,                  php_ui_window_void_info,            ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setSize,                 php_ui_window_set_size_info,        ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getSize,                 php_ui_window_get_size_info,        ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setFullScreen,           php_ui_window_set_full_screen_info, ZEND_ACC_PUBLIC)
