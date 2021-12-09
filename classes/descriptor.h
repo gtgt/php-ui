@@ -24,7 +24,7 @@ extern zend_class_entry *uiDrawTextFontItalic_ce;
 extern zend_class_entry *uiDrawTextFontStretch_ce;
 
 typedef struct _php_ui_descriptor_t {
-	uiDrawTextFontDescriptor d;
+	uiFontDescriptor d;
 	zend_object std;
 } php_ui_descriptor_t;
 
