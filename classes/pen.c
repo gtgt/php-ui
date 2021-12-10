@@ -229,7 +229,7 @@ PHP_METHOD(DrawPen, write)
 	layout = php_ui_layout_fetch(_layout);
 	point = php_ui_point_fetch(_point);
 
-	uiDrawText(pen->c, point->x, point->y, layout->l);	
+	uiDrawText(pen->c, layout->l, point->x, point->y);	
 } /* }}} */
 
 /* {{{ */
