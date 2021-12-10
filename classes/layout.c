@@ -24,7 +24,6 @@
 #include <classes/exceptions.h>
 #include <classes/descriptor.h>
 #include <classes/layout.h>
-#include <classes/font.h>
 #include <classes/color.h>
 
 zend_object_handlers php_ui_layout_handlers;
