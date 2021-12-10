@@ -78,9 +78,9 @@ PHP_METHOD(DrawTextFontDescriptor, __construct)
 	php_ui_descriptor_t *descriptor = php_ui_descriptor_fetch(getThis());
 	zend_string *family = NULL;
 	double size = 0;
-	int weight = uiDrawTextWeightNormal;
-	int italic = uiDrawTextItalicNormal;
-	int stretch = uiDrawTextStretchNormal;
+	int weight = uiTextWeightNormal;
+	int italic = uiTextItalicNormal;
+	int stretch = uiTextStretchNormal;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Sd|lll", &family, &size, &weight, &italic, &stretch) != SUCCESS) {
 		return;
@@ -183,7 +183,8 @@ PHP_MINIT_FUNCTION(UI_DrawTextFontDescriptor)
 	uiDrawTextFontWeight_ce = zend_register_internal_class(&ce);
 	uiDrawTextFontWeight_ce->ce_flags |= ZEND_ACC_FINAL;
 
-#define php_ui_register_weight(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiDrawTextWeight##n)
+#define php_ui_register_weight(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiTextWeight##n)
+	php_ui_register_weight(uiDrawTextFontWeight_ce, Minimum);
 	php_ui_register_weight(uiDrawTextFontWeight_ce, Thin);
 	php_ui_register_weight(uiDrawTextFontWeight_ce, UltraLight);
 	php_ui_register_weight(uiDrawTextFontWeight_ce, Light);
@@ -195,6 +196,7 @@ PHP_MINIT_FUNCTION(UI_DrawTextFontDescriptor)
 	php_ui_register_weight(uiDrawTextFontWeight_ce, UltraBold);
 	php_ui_register_weight(uiDrawTextFontWeight_ce, Heavy);
 	php_ui_register_weight(uiDrawTextFontWeight_ce, UltraHeavy);
+	php_ui_register_weight(uiDrawTextFontWeight_ce, Maximum);
 #undef php_ui_register_weight
 
 	INIT_NS_CLASS_ENTRY(ce, "UI\\Draw\\Text\\Font", "Italic", NULL);
@@ -202,7 +204,7 @@ PHP_MINIT_FUNCTION(UI_DrawTextFontDescriptor)
 	uiDrawTextFontItalic_ce = zend_register_internal_class(&ce);
 	uiDrawTextFontItalic_ce->ce_flags |= ZEND_ACC_FINAL;
 
-#define php_ui_register_italic(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiDrawTextItalic##n)
+#define php_ui_register_italic(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiTextItalic##n)
 	php_ui_register_italic(uiDrawTextFontItalic_ce, Normal);
 	php_ui_register_italic(uiDrawTextFontItalic_ce, Oblique);
 	php_ui_register_italic(uiDrawTextFontItalic_ce, Italic);
@@ -213,7 +215,7 @@ PHP_MINIT_FUNCTION(UI_DrawTextFontDescriptor)
 	uiDrawTextFontStretch_ce = zend_register_internal_class(&ce);
 	uiDrawTextFontStretch_ce->ce_flags |= ZEND_ACC_FINAL;
 
-#define php_ui_register_stretch(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiDrawTextStretch##n)
+#define php_ui_register_stretch(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiTextStretch##n)
 	php_ui_register_stretch(uiDrawTextFontStretch_ce, UltraCondensed);
 	php_ui_register_stretch(uiDrawTextFontStretch_ce, ExtraCondensed);
 	php_ui_register_stretch(uiDrawTextFontStretch_ce, Condensed);
