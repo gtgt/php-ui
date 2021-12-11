@@ -15,41 +15,18 @@
   | Author: krakjoe                                                      |
   +----------------------------------------------------------------------+
 */
+#ifndef HAVE_PHP_UI_STRING_H
+#define HAVE_PHP_UI_STRING_H
 
-/* $Id$ */
+extern zend_class_entry *uiAttributedString_ce;
 
-#ifndef PHP_UI_H
-#define PHP_UI_H
+typedef struct _php_ui_string_t {
+	uiAttributedString* s;
+  zend_object std;
+} php_ui_string_t;
 
-extern zend_module_entry ui_module_entry;
-#define phpext_ui_ptr &ui_module_entry
+#define php_ui_string_from(o) ((php_ui_string_t*) ((char*) o - XtOffsetOf(php_ui_string_t, std)))
+#define php_ui_string_fetch(z) php_ui_string_from(Z_OBJ_P(z))
 
-#define PHP_UI_VERSION "2.1.0dev"
-
-#ifdef PHP_WIN32
-#	define PHP_UI_API __declspec(dllexport)
-#elif defined(__GNUC__) && __GNUC__ >= 4
-#	define PHP_UI_API __attribute__ ((visibility("default")))
-#else
-#	define PHP_UI_API
+PHP_MINIT_FUNCTION(UI_AttributedString);
 #endif
-
-#ifdef ZTS
-#include "TSRM.h"
-#endif
-
-#if defined(ZTS) && defined(COMPILE_DL_UI)
-ZEND_TSRMLS_CACHE_EXTERN()
-#endif
-
-#endif	/* PHP_UI_H */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */

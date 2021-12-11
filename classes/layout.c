@@ -23,6 +23,7 @@
 
 #include <classes/exceptions.h>
 #include <classes/descriptor.h>
+#include <classes/string.h>
 #include <classes/layout.h>
 #include <classes/color.h>
 
@@ -62,75 +63,33 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(DrawTextLayout, __construct) 
 {
 	php_ui_layout_t *layout = php_ui_layout_fetch(getThis());
-	zend_string *text = NULL;
-	zval *font = NULL;
+	zval *attributedString = NULL;
+	php_ui_string_t *s;
+	zval *defaultFont = NULL;
+	php_ui_descriptor_t *d;
 	double width = 0;
-	php_ui_font_t *f;
+	zend_long align = uiDrawTextAlignLeft;
 
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "SOd", &text, &font, uiDrawTextFont_ce, &width) != SUCCESS) {
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "OOdl", &attributedString, uiAttributedString_ce, &defaultFont, uiDrawTextFontDescriptor_ce, &width, &align) != SUCCESS) {
 		return;
 	}
 
-	f = php_ui_font_fetch(font);
+	s = php_ui_string_fetch(attributedString);
+	d = php_ui_descriptor_fetch(defaultFont);
+
+	layout->p->String = (uiAttributedString*) s;
+	layout->p->DefaultFont = (uiFontDescriptor*) d;
+	layout->p->Width = width;
+	layout->p->Align = align;
 
 	layout->l = 
-		uiDrawNewTextLayout(ZSTR_VAL(text), f->f, width);
-	layout->end = ZSTR_LEN(text);
-} /* }}} */
-
-ZEND_BEGIN_ARG_INFO_EX(php_ui_layout_set_width_info, 0, 0, 1)
-	ZEND_ARG_TYPE_INFO(0, width, IS_DOUBLE, 0)
-ZEND_END_ARG_INFO()
-
-/* {{{ proto void UI\Draw\Text\Layout::setWidth(double width) */
-PHP_METHOD(DrawTextLayout, setWidth)
-{
-	php_ui_layout_t *layout = php_ui_layout_fetch(getThis());
-	double width = 0;
-	
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "d", &width) != SUCCESS) {
-		return;
-	}
-
-	uiDrawTextLayoutSetWidth(layout->l, width);
-} /* }}} */
-
-ZEND_BEGIN_ARG_INFO_EX(php_ui_layout_set_color_info, 0, 0, 1)
-	ZEND_ARG_INFO(0, color)
-	ZEND_ARG_TYPE_INFO(0, start, IS_LONG, 0)
-	ZEND_ARG_TYPE_INFO(0, end, IS_LONG, 0)
-ZEND_END_ARG_INFO()
-
-/* {{{ proto void UI\Draw\Text\Layout::setColor(UI\Draw\Color color [, int start, int end]) */
-PHP_METHOD(DrawTextLayout, setColor)
-{
-	php_ui_layout_t *layout = php_ui_layout_fetch(getThis());
-	zend_long start = 0, end = 0;
-	zval *color = NULL;
-	double r = 0, g = 0, b = 0, a = 1;
-
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ll", &color, &start, &end) != SUCCESS) {
-		return;
-	}
-
-	if (ZEND_NUM_ARGS() < 3) {
-		end = layout->end;
-	}
-
-	if (!php_ui_color_set(color, &r, &g, &b, &a)) {
-		php_ui_exception(
-			"failed to set color of layout");
-		return;
-	}
-
-	uiDrawTextLayoutSetColor(layout->l, start, end, r, g, b, a);
+		uiDrawNewTextLayout(layout->p);
+	layout->end = uiAttributedStringLen((uiAttributedString*)attributedString);
 } /* }}} */
 
 /* {{{ */
 const zend_function_entry php_ui_layout_methods[] = {
 	PHP_ME(DrawTextLayout, __construct, php_ui_layout_construct_info, ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextLayout, setWidth, php_ui_layout_set_width_info, ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextLayout, setColor, php_ui_layout_set_color_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
