@@ -23,7 +23,7 @@
 
 #include <classes/exceptions.h>
 #include <classes/descriptor.h>
-#include <classes/string.h>
+#include <classes/attributed.h>
 #include <classes/layout.h>
 #include <classes/color.h>
 
@@ -54,36 +54,38 @@ void php_ui_layout_free(zend_object *o) {
 	zend_object_std_dtor(o);
 }
 ZEND_BEGIN_ARG_INFO_EX(php_ui_layout_construct_info, 0, 0, 3)
-	ZEND_ARG_TYPE_INFO(0, text, IS_STRING, 0)
-	ZEND_ARG_OBJ_INFO(0,  font, UI\\Draw\\Text\\Font, 0)
+	ZEND_ARG_OBJ_INFO(0,  text, UI\\Draw\\Text\\Attributed, 0)
+	ZEND_ARG_OBJ_INFO(0,  defaultFont, UI\\Draw\\Text\\Font\\Descriptor, 0)
 	ZEND_ARG_TYPE_INFO(0, width, IS_DOUBLE, 0)
+	ZEND_ARG_TYPE_INFO(0, align, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto UI\Draw\Text\Layout UI\Draw\Text\Layout::__construct(string text, UI\Draw\Text\Font font, double width) */
+/* {{{ proto UI\Draw\Text\Layout UI\Draw\Text\Layout::__construct(UI\Draw\Text\String text, UI\Draw\Text\Font\Descriptor defaultFont, double width, int|UI\Draw\Text\Align align) */
 PHP_METHOD(DrawTextLayout, __construct) 
 {
 	php_ui_layout_t *layout = php_ui_layout_fetch(getThis());
 	zval *attributedString = NULL;
-	php_ui_string_t *s;
+	php_ui_attributed_t *s;
 	zval *defaultFont = NULL;
 	php_ui_descriptor_t *d;
 	double width = 0;
 	zend_long align = uiDrawTextAlignLeft;
+	uiDrawTextLayoutParams p;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "OOdl", &attributedString, uiAttributedString_ce, &defaultFont, uiDrawTextFontDescriptor_ce, &width, &align) != SUCCESS) {
 		return;
 	}
 
-	s = php_ui_string_fetch(attributedString);
+	s = php_ui_attributed_fetch(attributedString);
 	d = php_ui_descriptor_fetch(defaultFont);
 
-	layout->p->String = (uiAttributedString*) s;
-	layout->p->DefaultFont = (uiFontDescriptor*) d;
-	layout->p->Width = width;
-	layout->p->Align = align;
+	p.String = s->s;
+	p.DefaultFont = d;
+	p.Width = width;
+	p.Align = align;
 
 	layout->l = 
-		uiDrawNewTextLayout(layout->p);
+		uiDrawNewTextLayout(&p);
 	layout->end = uiAttributedStringLen((uiAttributedString*)attributedString);
 } /* }}} */
 
@@ -97,6 +99,11 @@ const zend_function_entry php_ui_layout_methods[] = {
 PHP_MINIT_FUNCTION(UI_DrawTextLayout) 
 {
 	zend_class_entry ce;
+
+	// casing like UI\Loop == PHP_UI_LOOP
+	REGISTER_NS_LONG_CONSTANT("UI\\Draw\\Text\\Align", "Left", uiDrawTextAlignLeft, CONST_CS|CONST_PERSISTENT);
+	REGISTER_NS_LONG_CONSTANT("UI\\Draw\\Text\\Align", "Center", uiDrawTextAlignCenter, CONST_CS|CONST_PERSISTENT);
+	REGISTER_NS_LONG_CONSTANT("UI\\Draw\\Text\\Align", "Right", uiDrawTextAlignRight, CONST_CS|CONST_PERSISTENT);
 
 	INIT_NS_CLASS_ENTRY(ce, "UI\\Draw\\Text", "Layout", php_ui_layout_methods);
 

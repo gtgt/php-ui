@@ -50,6 +50,7 @@
 #include <classes/check.h>
 #include <classes/button.h>
 #include <classes/cbutton.h>
+#include <classes/fbutton.h>
 #include <classes/label.h>
 #include <classes/entry.h>
 #include <classes/multi.h>
@@ -203,6 +204,7 @@ PHP_MINIT_FUNCTION(ui)
 	PHP_MINIT(UI_Check)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_Button)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_ColorButton)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(UI_FontButton)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_Label)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_Entry)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_Multi)(INIT_FUNC_ARGS_PASSTHRU);
@@ -226,6 +228,7 @@ PHP_MINIT_FUNCTION(ui)
 	PHP_MINIT(UI_DrawStroke)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawMatrix)(INIT_FUNC_ARGS_PASSTHRU);
 
+	PHP_MINIT(UI_DrawTextAttributedString)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawTextFontDescriptor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawTextLayout)(INIT_FUNC_ARGS_PASSTHRU);
 

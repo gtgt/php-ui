@@ -15,18 +15,23 @@
   | Author: krakjoe                                                      |
   +----------------------------------------------------------------------+
 */
-#ifndef HAVE_PHP_UI_STRING_H
-#define HAVE_PHP_UI_STRING_H
+#ifndef HAVE_PHP_UI_FBUTTON_H
+#define HAVE_PHP_UI_FBUTTON_H
 
-extern zend_class_entry *uiAttributedString_ce;
+extern zend_class_entry *uiFontButton_ce;
 
-typedef struct _php_ui_string_t {
-	uiAttributedString* s;
-  zend_object std;
-} php_ui_string_t;
+typedef struct _php_ui_fbutton_t {
+	uiFontButton *b;
+	zend_object *parent;
+	struct php_ui_fbutton_click_t {
+		zend_fcall_info fci;
+		zend_fcall_info_cache fcc;
+	} change;
+	zend_object std;
+} php_ui_fbutton_t;
 
-#define php_ui_string_from(o) ((php_ui_string_t*) ((char*) o - XtOffsetOf(php_ui_string_t, std)))
-#define php_ui_string_fetch(z) php_ui_string_from(Z_OBJ_P(z))
+#define php_ui_fbutton_from(o) ((php_ui_fbutton_t*) ((char*) o - XtOffsetOf(php_ui_fbutton_t, std)))
+#define php_ui_fbutton_fetch(z) php_ui_fbutton_from(Z_OBJ_P(z))
 
-PHP_MINIT_FUNCTION(UI_AttributedString);
+PHP_MINIT_FUNCTION(UI_FontButton);
 #endif

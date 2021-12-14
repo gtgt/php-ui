@@ -2,7 +2,7 @@
 	"configurations": [
 		{
 			"name": "Mac",
-			"includePath": [
+			"includePath": [ // conv'd from make output:
 				"${workspaceFolder}/**",
 				"/opt/local/include/php74/php",
 				"/opt/local/include/php74/php/main",
@@ -22,8 +22,10 @@
 			"cStandard": "c11",
 			"cppStandard": "c++98",
 			"intelliSenseMode": "macos-clang-x64",
-			"compilerArgs": ["-Wall"]
-//			"configurationProvider": "go2sh.cmake-integration"
+//			"compilerArgs": ["-Wall"],
+//			"configurationProvider": "go2sh.cmake-integration",
+			"configurationProvider": "ms-vscode.makefile-tools",
+			"compileCommands": "${workspaceFolder}/compile_commands.json" // `pip3 install compiledb`
 		}
 	],
 	"version": 4

@@ -15,19 +15,19 @@
   | Author: krakjoe                                                      |
   +----------------------------------------------------------------------+
 */
-#ifndef HAVE_PHP_UI_LAYOUT_H
-#define HAVE_PHP_UI_LAYOUT_H
+#ifndef HAVE_PHP_UI_ATTRIBUTED_H
+#define HAVE_PHP_UI_ATTRIBUTED_H
 
-extern zend_class_entry *uiDrawTextLayout_ce;
+extern zend_class_entry *uiAttributedString_ce;
+extern zend_class_entry *uiDrawTextAlign_ce;
 
-typedef struct _php_ui_layout_t {
-	uiDrawTextLayout* l;
-	size_t end;
-	zend_object std;
-} php_ui_layout_t;
+typedef struct _php_ui_attributed_t {
+  uiAttributedString *s;
+  zend_object std;
+} php_ui_attributed_t;
 
-#define php_ui_layout_from(o) ((php_ui_layout_t*) ((char*) o - XtOffsetOf(php_ui_layout_t, std)))
-#define php_ui_layout_fetch(z) php_ui_layout_from(Z_OBJ_P(z))
+#define php_ui_attributed_from(o) ((php_ui_attributed_t*) ((char*) o - XtOffsetOf(php_ui_attributed_t, std)))
+#define php_ui_attributed_fetch(z) php_ui_attributed_from(Z_OBJ_P(z))
 
-PHP_MINIT_FUNCTION(UI_DrawTextLayout);
+PHP_MINIT_FUNCTION(UI_DrawTextAttributedString);
 #endif

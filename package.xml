@@ -49,6 +49,8 @@
 		<file name="button.h" role="src" />
 		<file name="cbutton.c" role="src" />
 		<file name="cbutton.h" role="src" />
+		<file name="fbutton.c" role="src" />
+		<file name="fbutton.h" role="src" />
 		<file name="check.c" role="src" />
 		<file name="check.h" role="src" />
 		<file name="color.c" role="src" />
@@ -59,6 +61,8 @@
 		<file name="control.h" role="src" />
 		<file name="descriptor.c" role="src" />
 		<file name="descriptor.h" role="src" />
+		<file name="attributed.c" role="src" />
+		<file name="attributed.h" role="src" />
 		<file name="ecombo.c" role="src" />
 		<file name="ecombo.h" role="src" />
 		<file name="exceptions.c" role="src" />
@@ -67,8 +71,6 @@
 		<file name="executor.h" role="src" />
 		<file name="entry.c" role="src" />
 		<file name="entry.h" role="src" />
-		<file name="font.c" role="src" />
-		<file name="font.h" role="src" />
 		<file name="form.c" role="src" />
 		<file name="form.h" role="src" />
 		<file name="grid.c" role="src" />

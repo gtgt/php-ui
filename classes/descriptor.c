@@ -155,12 +155,12 @@ PHP_METHOD(DrawTextFontDescriptor, getStretch)
 
 /* {{{ */
 const zend_function_entry php_ui_descriptor_methods[] = {
-	PHP_ME(DrawTextFontDescriptor, __construct, php_ui_descriptor_construct_info, ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextFontDescriptor, getFamily,   php_ui_descriptor_string_info,    ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextFontDescriptor, getSize,     php_ui_descriptor_double_info,    ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextFontDescriptor, getWeight,     php_ui_descriptor_long_info,    ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextFontDescriptor, getItalic,     php_ui_descriptor_long_info,    ZEND_ACC_PUBLIC)
-	PHP_ME(DrawTextFontDescriptor, getStretch,     php_ui_descriptor_long_info,    ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextFontDescriptor, __construct,   php_ui_descriptor_construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextFontDescriptor, getFamily,     php_ui_descriptor_string_info,    ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextFontDescriptor, getSize,       php_ui_descriptor_double_info,    ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextFontDescriptor, getWeight,     php_ui_descriptor_long_info,      ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextFontDescriptor, getItalic,     php_ui_descriptor_long_info,      ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextFontDescriptor, getStretch,    php_ui_descriptor_long_info,      ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
