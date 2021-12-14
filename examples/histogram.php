@@ -160,7 +160,6 @@ $colorBox->setText("0x8892BFFF");
 $colorButton = new class($histogram, $colorBox, new Color(0x8892BFFF)) extends ColorButton {
 
 	protected function onChange() {
-		printf("TOOOT\n");flush();
 		$redrawColor = $this->getColor();
 		
 		$this->entry->setText(sprintf(

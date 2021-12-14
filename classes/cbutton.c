@@ -48,7 +48,6 @@ void php_ui_cbutton_change_handler(uiColorButton *u, void *_button) {
 		}
 
 		if (Z_TYPE(rv) != IS_UNDEF) {
-			printf("Z_TYPE(rv) != IS_UNDEF\n");
 			zval_ptr_dtor(&rv);
 		}
 	}
