@@ -70,9 +70,13 @@ int php_ui_window_closing_handler(uiWindow *w, void *arg) {
 	php_ui_window_t *window = (php_ui_window_t *) arg;
 	zval rv;
 	int result = 0;
+	uiControl *uic;
 
 	if (!window->closing.fci.size) {
-		uiControlDestroy(uiControl(window->w));
+		uic = uiControl(window->w);
+		if (uic->Destroy) {
+			uiControlDestroy(uic);
+		}
 		uiQuit();
 
 		return 0;
