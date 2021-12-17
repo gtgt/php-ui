@@ -22,3 +22,8 @@
 *.loT
 /modules
 ui.la
+#{tasks,launch}.json helpers
+/*-helper.log
+/*-helper-*.log
+# too personal
+/.vscode/launch/*-vphpX_*
