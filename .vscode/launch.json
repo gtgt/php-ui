@@ -4,8 +4,26 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
+		{
+			"name": "Launch via vphp -K launch-task.php",
+			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
+			"preLaunchTask": "vphp -K launch-task.php",
+//			"postDebugTask": "rm launch-task.php",
+			"cwd": "${workspaceFolder}",
+			"environment": [ // these are not set for miDebuggerPath, so probably not tasks either, and thus, no need for env TERM=xterm-256color vphp_keepfile=…
+				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
+				{"name": "phpv", "value": "74"},
+				{"name": "VPHP_LIBRARIES_ROOTS", "value": "${env:HOME}/shell/library/php/com/dyn_o_saur/bluelephant:${env:HOME}/shell/library/sysepos/Darwin/php:${env:HOME}/shell/library/php"}, // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
+				{"name": "PHP_LIBRARIES_ROOT", "value": "${env:HOME}/shell/library/php"}, // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
+				],
+			"program": "/opt/local/bin/php74", "args": [
+				"-dextension=./modules/ui.so",
+				"launch-task.php",
+			],
+//			"logging": {"engineLogging": true},
+		},
 /*		{
-			"type": "lldb",
+			"type": "lldb", // extension @id:vadimcn.vscode-lldb
 			"request": "custom",
 			"name": "Custom launch",
 			"targetCreateCommands": [
@@ -37,14 +55,14 @@
 		{
 			"name": "INVALID: Launch via miDebuggerPath: vscode-helper main-vphpX__likeExit_exec_lldb_mi_helper_.sh",
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
-			"preLaunchTask": "z make",
+			"preLaunchTask": "make",
 			"cwd": "${workspaceFolder}",
 			"environment": [ // these are not set for miDebuggerPath so no need setting TERM=xterm-256color
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 				{"name": "phpv", "value": "74"},
 				],
-			"program": "/usr/bin/read", "args": ["-pText\nTest:"],
-//			"program": "/opt/local/bin/php74",
+//			"program": "/usr/bin/read", "args": ["-pText\nTest:"],
+			"program": "/opt/local/bin/php74",
 			"miDebuggerPath": "${env:HOME}/shell/library/script/various/vscode-helper", // remember chmod on perms err // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 	//		"miDebuggerArgs": "-- -dextension=ui -- -Prexc -\\(,new\\ UI\\\\Window -\\( \"test\" -,new\\ UI\\\\Size'(640,480)' -\\)\\)' -> 'show\\(\\) -\\; UI\\\\run -\\(\\)", // this is split on space and backslash doesn't escape! and even if i could rewrite the command to circumvent this is pathetically lame (btw these are args to the personal - private until further - script vphp)
 			"miDebuggerArgs": ".vscode/launch/main-vphpX__likeExit_exec_lldb_mi_helper_.sh",
@@ -63,14 +81,17 @@ The program '/usr/bin/read' has exited with code 42 (0x0000002a). */
 		{
 			"name": "INVALID: Launch via vscode-helper main.sh", // cause script as program makes lldb fail to find binary data
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
-			"preLaunchTask": "z make",
+			"preLaunchTask": "make",
 			"cwd": "${workspaceFolder}",
 			"environment": [ // these are not set for miDebuggerPath so no need setting TERM=xterm-256color
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 				{"name": "phpv", "value": "74"},
 				],
 			"program": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX.sh"], // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
-			"logging": {
+			"logging": { /* $ ~/.vscode/extensions/ms-vscode.cpptools-1.7.1/debugAdapters/bin/OpenDebugAD7 --help # …
+--trace: print the requests coming from VS Code to the console.
+--trace=response: print requests and response from VS Code to the console.
+--engineLogging[=filePath]: Enable logging from the debug engine. … */
 //				"trace": true,
 //				"traceResponse": true,
 				"engineLogging": true,
@@ -79,7 +100,7 @@ The program '/usr/bin/read' has exited with code 42 (0x0000002a). */
 		{
 			"name": "Launch php74 examples/histogram.php",
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
-			"preLaunchTask": "z make",
+			"preLaunchTask": "make",
 			"cwd": "${workspaceFolder}",
 			"environment": [
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},

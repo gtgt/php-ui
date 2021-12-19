@@ -29,3 +29,7 @@ ui.la
 /*-helper-*.log
 # too personal
 /.vscode/launch/*-vphpX_*
+/.vscode/launch/*-vphpX.*
+/.vscode/launch/*-vphpK_*
+/.vscode/launch/*-vphpK.*
+/launch-task.php
