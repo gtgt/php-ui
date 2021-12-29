@@ -1,4 +1,4 @@
-/.idea
+#phpize74
 /autom4te.cache
 /build
 /config.h.in
@@ -6,8 +6,6 @@
 /configure~
 /configure
 /configure.ac
-/deps
-/libui
 /run-tests.php
 #./configure
 /Makefile
@@ -18,8 +16,8 @@
 /config.nice
 /config.status
 /libtool
+#make
 .libs
-*.dep
 *.lo
 *.loT
 /modules

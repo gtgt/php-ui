@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"group": "build",
-			"dependsOn": "make",
+			"dependsOn": "build",
 			"label": "vphp -K launch-task.php",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpK.sh"],
 			"options": {"cwd": "${workspaceFolder}"},
@@ -17,22 +17,56 @@
 		{
 			"group": "build",
 			"isBackground": true,
-			"dependsOn": "make",
+			"dependsOn": "build",
 			"label": "debug-main",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main.sh"],
 			"options": {"cwd": "${workspaceFolder}"},
 		},
 		{
 			"group": "build",
-			"dependsOn": "make",
+			"dependsOn": "build",
 			"label": "debug-main-vphpX__likeExit_fork_",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX__likeExit_fork_.sh"],
 			"options": {"cwd": "${workspaceFolder}"},
 		},
 		{
 			"group": "build",
-			"label": "make",
+			"label": "build",
 			"type": "process", "command": "make",
+			"options": {"cwd": "${workspaceFolder}"},
+		},
+		{
+			"group": "build",
+			"label": "clean",
+			"type": "process", "command": "make", "args": ["clean"],
+			"options": {"cwd": "${workspaceFolder}"},
+		},
+		{
+			"group": "build",
+			"label": "clean && build",
+			"dependsOn": [
+				"clean",
+				"build",
+			],
+			"dependsOrder": "sequence",
+			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
+			"label": "configure for php74 && clean && build",
+			"dependsOn": [
+				"configure for php74",
+				"clean",
+				"build",
+			],
+			"dependsOrder": "sequence",
+			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
+			"label": "configure for php74",
+//			"type": "shell", "command": "PHP_AUTOCONF=/opt/local/bin/autoconf PHP_AUTOHEADER=/opt/local/bin/autoheader /opt/local/bin/phpize74 && ./configure",
+			"type": "shell", "command": "${env:HOME}/shell/library/script/various/vscode-helper .vscode/tasks/main.sh", // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 			"options": {"cwd": "${workspaceFolder}"}
 		}
 	]
