@@ -5,7 +5,24 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Launch via vphp -K launch-task.php",
+			"name": "Launch in lldb via vphp -K launch-task.php",
+			"request": "launch", "type": "lldb", // extension @id:vadimcn.vscode-lldb
+			"cwd": "${workspaceFolder}",
+			"preLaunchTask": "vphp -K launch-task.php",
+//			"postDebugTask": "rm launch-task.php",
+			"env": {
+				"XDEBUG_TRIGGER": "xdbg",
+				"phpv": "74",
+				"VPHP_LIBRARIES_ROOTS": "${env:HOME}/shell/library/php/com/dyn_o_saur/bluelephant:${env:HOME}/shell/library/sysepos/Darwin/php:${env:HOME}/shell/library/php", // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
+				"PHP_LIBRARIES_ROOT": "${env:HOME}/shell/library/php", // sorry, but vscode stumps on resolving my shell env
+			},
+			"program": "/opt/local/bin/php74", "args": [
+				"-d", "extension=./modules/ui.so",
+				"launch-task.php",
+			],
+		},
+		{
+			"name": "Launch in cppdbg via vphp -K launch-task.php",
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
 			"preLaunchTask": "vphp -K launch-task.php",
 //			"postDebugTask": "rm launch-task.php",
@@ -22,21 +39,9 @@
 			],
 //			"logging": {"engineLogging": true},
 		},
-/*		{
-			"type": "lldb", // extension @id:vadimcn.vscode-lldb
-			"request": "custom",
-			"name": "Custom launch",
-			"targetCreateCommands": [
-				"target create ${workspaceFolder}/<your program>"
-			],
-			"processCreateCommands": [
-				"settings set target.run-args value1 value2 value3",
-				"process launch"
-			]
-		},/**/
 		{
 			"name": "Attach for php74",
-			"program": "/opt/local/bin/php74",
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
 			"request": "attach", "type": "cppdbg", "MIMode": "lldb",
 			"cwd": "${workspaceFolder}",
 			"additionalSOLibSearchPath": "/Users/vike/file/develop/git/ui/modules",
@@ -45,7 +50,7 @@
 		},
 		{
 			"name": "INVALID: Attach to preLaunchTask debug-main-vphpX__likeExit_fork_",
-			"program": "/opt/local/bin/php74",
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
 			"request": "attach", "type": "cppdbg", "MIMode": "lldb",
 			"preLaunchTask": "debug-main-vphpX__likeExit_fork_",
 //			"processId": "${command:pickProcess}", // ! specified ? preLaunchTask executes as wanted but then "attach: property 'processId' needs to be specified" : variables resolves before running preLaunchTask is "as designed" so closing and locking issue fuck you very much https://github.com/microsoft/vscode/issues/75604#issuecomment-542644091
@@ -62,7 +67,7 @@
 				{"name": "phpv", "value": "74"},
 				],
 //			"program": "/usr/bin/read", "args": ["-pText\nTest:"],
-			"program": "/opt/local/bin/php74",
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
 			"miDebuggerPath": "${env:HOME}/shell/library/script/various/vscode-helper", // remember chmod on perms err // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 	//		"miDebuggerArgs": "-- -dextension=ui -- -Prexc -\\(,new\\ UI\\\\Window -\\( \"test\" -,new\\ UI\\\\Size'(640,480)' -\\)\\)' -> 'show\\(\\) -\\; UI\\\\run -\\(\\)", // this is split on space and backslash doesn't escape! and even if i could rewrite the command to circumvent this is pathetically lame (btw these are args to the personal - private until further - script vphp)
 			"miDebuggerArgs": ".vscode/launch/main-vphpX__likeExit_exec_lldb_mi_helper_.sh",
@@ -105,7 +110,7 @@ The program '/usr/bin/read' has exited with code 42 (0x0000002a). */
 			"environment": [
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 			],
-			"program": "/opt/local/bin/php74", // vscode stumps on resolving my shell env so I need full path
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
 			"args": ["-dextension=modules/ui.so", "examples/histogram.php"],
 		},
 		{

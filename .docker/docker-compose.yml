@@ -1,0 +1,10 @@
+  version: '3'
+  services:
+    ui:
+      build:
+        context   : ../..
+        dockerfile: ui/.docker/services/ui/Dockerfile
+# I start it with a bash alias d-c=docker-compose and too complicated cd1:
+# : cd1 .docker d-c build && cd1 .docker d-c run --help -e COLUMNS=$COLUMNS -e LINES=$LINES -e DISPLAY=host.docker.internal:0 --rm --entrypoint bash ui
+# wh/ w/o cd1 it becomes:
+# (cd .docker && : d-c build && d-c run --help -e COLUMNS=$COLUMNS -e LINES=$LINES -e DISPLAY=host.docker.internal:0 --rm --entrypoint bash ui)
