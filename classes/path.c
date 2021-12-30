@@ -239,6 +239,32 @@ PHP_METHOD(DrawPath, end)
 	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
+// Requires github.com/vike2000/libui
+#ifdef LIBUI_HAS_DRAW_PATH_ENDED
+#if PHP_VERSION_ID >= 70200
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_path_is_ended_info, 0, 0, _IS_BOOL, 0)
+#else
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_path_is_ended_info, 0, 0, _IS_BOOL, NULL, 0)
+#endif
+ZEND_END_ARG_INFO()
+
+/* {{{ proto bool UI\Draw\Path::isEnded(void) */
+PHP_METHOD(DrawPath, isEnded)
+{
+	php_ui_path_t *path = php_ui_path_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	if (uiDrawPathEnded(path->p)) {
+		RETURN_TRUE;
+	} else {
+		RETURN_FALSE;
+	}
+} /* }}} */
+#endif
+
 /* {{{ */
 const zend_function_entry php_ui_path_methods[] = {
 	PHP_ME(DrawPath, __construct, php_ui_path_construct_info, ZEND_ACC_PUBLIC)
@@ -250,6 +276,9 @@ const zend_function_entry php_ui_path_methods[] = {
 	PHP_ME(DrawPath, closeFigure, php_ui_path_close_figure_info, ZEND_ACC_PUBLIC)
 	PHP_ME(DrawPath, addRectangle, php_ui_path_add_rectangle_info, ZEND_ACC_PUBLIC)
 	PHP_ME(DrawPath, end, php_ui_path_end_info, ZEND_ACC_PUBLIC)
+	#ifdef LIBUI_HAS_DRAW_PATH_ENDED
+	PHP_ME(DrawPath, isEnded, php_ui_path_is_ended_info, ZEND_ACC_PUBLIC)
+	#endif
 	PHP_FE_END
 }; /* }}} */
 
