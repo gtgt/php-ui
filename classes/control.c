@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/exceptions.h>
 #include <classes/control.h>
 
@@ -72,7 +74,7 @@ void php_ui_control_finalize(void) {
 	uiControl_ce->ce_flags |= ZEND_ACC_FINAL;
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_control_void_info, 0, 0, 0)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_control_void_info, 0, 0, UI\\Control, 0)
 ZEND_END_ARG_INFO()
 
 #if PHP_VERSION_ID >= 70200
@@ -99,11 +101,11 @@ PHP_METHOD(Control, getParent)
 	Z_ADDREF_P(return_value);
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_control_set_parent_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_control_set_parent_info, 0, 1, UI\\Control, 0)
 	ZEND_ARG_OBJ_INFO(0, parent, UI\\Control, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Control::setParent(Control parent) */
+/* {{{ proto Control Control::setParent(Control parent) */
 PHP_METHOD(Control, setParent)
 {
 	php_ui_control_t *ctrl = php_ui_control_fetch(getThis()),
@@ -126,6 +128,8 @@ PHP_METHOD(Control, setParent)
 	}
 
 	uiControlSetParent(ctrl->control, pctrl->control);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -170,7 +174,7 @@ PHP_METHOD(Control, isVisible)
 	}
 } /* }}} */
 
-/* {{{ proto void Control::show(void) */
+/* {{{ proto Control Control::show(void) */
 PHP_METHOD(Control, show) 
 {
 	php_ui_control_t *ctrl = php_ui_control_fetch(getThis());
@@ -180,9 +184,11 @@ PHP_METHOD(Control, show)
 	}
 
 	uiControlShow(ctrl->control);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-/* {{{ proto void Control::hide(void) */
+/* {{{ proto Control Control::hide(void) */
 PHP_METHOD(Control, hide) 
 {
 	php_ui_control_t *ctrl = php_ui_control_fetch(getThis());
@@ -192,6 +198,8 @@ PHP_METHOD(Control, hide)
 	}
 
 	uiControlHide(ctrl->control);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -217,7 +225,7 @@ PHP_METHOD(Control, isEnabled)
 	}
 } /* }}} */
 
-/* {{{ proto void Control::enable(void) */
+/* {{{ proto Control Control::enable(void) */
 PHP_METHOD(Control, enable) 
 {
 	php_ui_control_t *ctrl = php_ui_control_fetch(getThis());
@@ -227,9 +235,11 @@ PHP_METHOD(Control, enable)
 	}
 
 	uiControlEnable(ctrl->control);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-/* {{{ proto void Control::disable(void) */
+/* {{{ proto Control Control::disable(void) */
 PHP_METHOD(Control, disable) 
 {
 	php_ui_control_t *ctrl = php_ui_control_fetch(getThis());
@@ -239,7 +249,12 @@ PHP_METHOD(Control, disable)
 	}
 
 	uiControlDisable(ctrl->control);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
+
+ZEND_BEGIN_ARG_INFO_EX(php_ui_control_destroy_info, 0, 0, 0)
+ZEND_END_ARG_INFO()
 
 /* {{{ proto void Control::destroy(void) */
 PHP_METHOD(Control, destroy)
@@ -269,7 +284,7 @@ const zend_function_entry php_ui_control_methods[] = {
 	PHP_ME(Control, isEnabled,   php_ui_control_is_enabled_info,      ZEND_ACC_PUBLIC)
 	PHP_ME(Control, enable,      php_ui_control_void_info,            ZEND_ACC_PUBLIC)
 	PHP_ME(Control, disable,     php_ui_control_void_info,            ZEND_ACC_PUBLIC)
-	PHP_ME(Control, destroy,     php_ui_control_void_info,            ZEND_ACC_PUBLIC)
+	PHP_ME(Control, destroy,     php_ui_control_destroy_info,         ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
