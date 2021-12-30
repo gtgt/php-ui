@@ -26,6 +26,7 @@
 #include <classes/point.h>
 #include <classes/size.h>
 #include <classes/path.h>
+#include <classes/matrix.h>
 
 zend_object_handlers php_ui_path_handlers;
 
@@ -265,6 +266,30 @@ PHP_METHOD(DrawPath, isEnded)
 } /* }}} */
 #endif
 
+#ifdef LIBUI_HAS_DRAW_PATH_TRANSFORM
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_transform_info, 0, 1, UI\\Draw\\Path, 0)
+	ZEND_ARG_OBJ_INFO(0, matrix, UI\\Draw\\Matrix, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Path UI\Draw\Path::transform(Matrix matrix) */
+PHP_METHOD(DrawPath, transform)
+{
+	php_ui_path_t *path = php_ui_path_fetch(getThis());
+	php_ui_path_t *result;
+	php_ui_matrix_t *matrix;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &matrix, uiDrawMatrix_ce) != SUCCESS) {
+		return;
+	}
+
+	object_init_ex(return_value, uiDrawPath_ce);
+
+	result = php_ui_path_fetch(return_value);
+
+	result->p = uiDrawCopyPathByTransform(path->p, &matrix->m);
+} /* }}} */
+#endif
+
 /* {{{ */
 const zend_function_entry php_ui_path_methods[] = {
 	PHP_ME(DrawPath, __construct, php_ui_path_construct_info, ZEND_ACC_PUBLIC)
@@ -278,6 +303,9 @@ const zend_function_entry php_ui_path_methods[] = {
 	PHP_ME(DrawPath, end, php_ui_path_end_info, ZEND_ACC_PUBLIC)
 	#ifdef LIBUI_HAS_DRAW_PATH_ENDED
 	PHP_ME(DrawPath, isEnded, php_ui_path_is_ended_info, ZEND_ACC_PUBLIC)
+	#endif
+	#ifdef LIBUI_HAS_DRAW_PATH_TRANSFORM
+	PHP_ME(DrawPath, transform, php_ui_path_transform_info, ZEND_ACC_PUBLIC)
 	#endif
 	PHP_FE_END
 }; /* }}} */
