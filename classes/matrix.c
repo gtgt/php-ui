@@ -21,7 +21,10 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/point.h>
+#include <classes/size.h>
 #include <classes/matrix.h>
 
 zend_object_handlers php_ui_matrix_handlers;
@@ -43,11 +46,11 @@ zend_object* php_ui_matrix_create(zend_class_entry *ce) {
 	return &matrix->std;
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_matrix_translate_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_translate_info, 0, 1, UI\\Draw\\Matrix, 0)
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void DrawMatrix::translate(Point point) */
+/* {{{ proto Matrix UI\Draw\Matrix::translate(Point point) */
 PHP_METHOD(DrawMatrix, translate)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -61,14 +64,16 @@ PHP_METHOD(DrawMatrix, translate)
 	p = php_ui_point_fetch(point);
 
 	uiDrawMatrixTranslate(&matrix->m, p->x, p->y);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_matrix_scale_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_scale_info, 0, 2, UI\\Draw\\Matrix, 0)
 	ZEND_ARG_OBJ_INFO(0, center, UI\\Point, 0)
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void DrawMatrix::scale(Point center, Point point) */
+/* {{{ proto Matrix UI\Draw\Matrix::scale(Point center, Point point) */
 PHP_METHOD(DrawMatrix, scale)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -83,14 +88,16 @@ PHP_METHOD(DrawMatrix, scale)
 	c = php_ui_point_fetch(center);
 
 	uiDrawMatrixScale(&matrix->m, c->x, c->y, p->x, p->y);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_matrix_rotate_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_rotate_info, 0, 2, UI\\Draw\\Matrix, 0)
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 	ZEND_ARG_TYPE_INFO(0, amount, IS_DOUBLE, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void DrawMatrix::rotate(Point point, double amount) */
+/* {{{ proto Matrix UI\Draw\Matrix::rotate(Point point, double amount) */
 PHP_METHOD(DrawMatrix, rotate)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -105,14 +112,16 @@ PHP_METHOD(DrawMatrix, rotate)
 	p = php_ui_point_fetch(point);
 
 	uiDrawMatrixRotate(&matrix->m, p->x, p->y, amount);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_matrix_skew_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_skew_info, 0, 2, UI\\Draw\\Matrix, 0)
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 	ZEND_ARG_OBJ_INFO(0, amount, UI\\Point, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void DrawMatrix::skew(Point point, Point amount) */
+/* {{{ proto Matrix UI\Draw\Matrix::skew(Point point, Point amount) */
 PHP_METHOD(DrawMatrix, skew)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -127,17 +136,19 @@ PHP_METHOD(DrawMatrix, skew)
 	a = php_ui_point_fetch(amount);
 
 	uiDrawMatrixSkew(&matrix->m, p->x, p->y, a->x, a->y);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_ui_matrix_multiply_info, 0, 1, UI\\DrawMatrix, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_ui_matrix_multiply_info, 0, 1, UI\\Draw\\Matrix, 0)
 #else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_matrix_multiply_info, 0, 1, IS_OBJECT, "UI\\DrawMatrix", 0)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_matrix_multiply_info, 0, 1, IS_OBJECT, "UI\\Draw\\Matrix", 0)
 #endif
 	ZEND_ARG_OBJ_INFO(0, matrix, UI\\Draw\\Matrix, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto UI\Draw\Matrix UI\Draw\Matrix::multiply(UI\Draw\Matrix multiply) */
+/* {{{ proto Matrix UI\Draw\Matrix::multiply(Matrix multiply) */
 PHP_METHOD(DrawMatrix, multiply)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -161,7 +172,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_matrix_is_invertible_info, 0, 0, 
 #endif
 ZEND_END_ARG_INFO()
 
-/* {{{ proto bool DrawMatrix::isInvertible(void) */
+/* {{{ proto bool UI\Draw\Matrix::isInvertible(void) */
 PHP_METHOD(DrawMatrix, isInvertible)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -177,10 +188,10 @@ PHP_METHOD(DrawMatrix, isInvertible)
 	}
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_matrix_invert_info, 0, 0, 0)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_invert_info, 0, 0, UI\\Draw\\Matrix, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void DrawMatrix::invert(void) */
+/* {{{ proto Matrix UI\Draw\Matrix::invert(void) */
 PHP_METHOD(DrawMatrix, invert)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
@@ -190,6 +201,58 @@ PHP_METHOD(DrawMatrix, invert)
 	}
 
 	uiDrawMatrixInvert(&matrix->m);
+
+	RETURN_ZVAL(getThis(), 1, 0)
+} /* }}} */
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_transform_point_info, 0, 1, UI\\Point, 0)
+	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Matrix UI\Draw\Matrix::translate(Point point) */
+PHP_METHOD(DrawMatrix, transformPoint)
+{
+	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
+	zval *point = NULL;
+	php_ui_point_t *p;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &point, uiPoint_ce) != SUCCESS) {
+		return;
+	}
+
+//	p = php_ui_point_fetch(point);
+
+	object_init_ex(return_value, uiPoint_ce);
+
+	p = php_ui_point_fetch(return_value);
+
+	uiDrawMatrixTransformPoint(&matrix->m, &p->x, &p->y);
+
+	return;
+} /* }}} */
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_transform_size_info, 0, 1, UI\\Point, 0)
+	ZEND_ARG_OBJ_INFO(0, point, UI\\Size, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Matrix UI\Draw\Matrix::translate(Point point) */
+PHP_METHOD(DrawMatrix, transformSize)
+{
+	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
+	zval *size = NULL;
+	php_ui_size_t *s;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &size, uiSize_ce) != SUCCESS) {
+		return;
+	}
+
+	object_init_ex(return_value, uiSize_ce);
+
+	s = php_ui_size_fetch(return_value);
+
+	uiDrawMatrixTransformSize(&matrix->m, &s->width, &s->height);
+
+	return;
 } /* }}} */
 
 /* {{{ */
@@ -201,6 +264,8 @@ const zend_function_entry php_ui_matrix_methods[] = {
 	PHP_ME(DrawMatrix, multiply,        php_ui_matrix_multiply_info,        ZEND_ACC_PUBLIC)
 	PHP_ME(DrawMatrix, isInvertible,    php_ui_matrix_is_invertible_info,   ZEND_ACC_PUBLIC)
 	PHP_ME(DrawMatrix, invert,          php_ui_matrix_invert_info,          ZEND_ACC_PUBLIC)
+	PHP_ME(DrawMatrix, transformPoint,  php_ui_matrix_transform_point_info, ZEND_ACC_PUBLIC)
+	PHP_ME(DrawMatrix, transformSize,   php_ui_matrix_transform_size_info,  ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 

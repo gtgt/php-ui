@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/control.h>
 #include <classes/point.h>
 #include <classes/size.h>
@@ -184,10 +186,10 @@ zend_object* php_ui_area_create(zend_class_entry *ce) {
 	return &area->std;
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_area_redraw_info, 0, 0, 0)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_area_redraw_info, 0, 0, UI\\Area, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Area::redraw(void) */
+/* {{{ proto Area Area::redraw(void) */
 PHP_METHOD(Area, redraw)
 {
 	php_ui_area_t *area = php_ui_area_fetch(getThis());
@@ -197,13 +199,15 @@ PHP_METHOD(Area, redraw)
 	}
 
 	uiAreaQueueRedrawAll(area->a);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_area_set_size_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_area_set_size_info, 0, 1, UI\\Area, 0)
 	ZEND_ARG_OBJ_INFO(0, size, UI\\Size, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Area::setSize(Size size) */
+/* {{{ proto Area Area::setSize(Size size) */
 PHP_METHOD(Area, setSize)
 {
 	php_ui_area_t *area = php_ui_area_fetch(getThis());
@@ -217,14 +221,16 @@ PHP_METHOD(Area, setSize)
 	s = php_ui_size_fetch(size);
 
 	uiAreaSetSize(area->a, (int) s->width, (int) s->height);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_area_scroll_to_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_area_scroll_to_info, 0, 2, UI\\Area, 0)
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 	ZEND_ARG_OBJ_INFO(0, size, UI\\Size, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Area::scrollTo(Point point, Size size) */
+/* {{{ proto Area Area::scrollTo(Point point, Size size) */
 PHP_METHOD(Area, scrollTo)
 {
 	php_ui_area_t *area = php_ui_area_fetch(getThis());
@@ -240,6 +246,8 @@ PHP_METHOD(Area, scrollTo)
 	s = php_ui_size_fetch(size);
 
 	uiAreaScrollTo(area->a, p->x, p->y, s->width, s->height);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 ZEND_BEGIN_ARG_INFO_EX(php_ui_area_on_draw_info, 0, 0, 4)

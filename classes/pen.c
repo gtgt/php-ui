@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/exceptions.h>
 #include <classes/point.h>
 #include <classes/size.h>
@@ -60,14 +62,14 @@ zval* php_ui_pen_construct(zval *object, uiDrawContext *c) {
 	return object;
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_fill_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_fill_info, 0, 2, UI\\Draw\\Pen, 0)
 	ZEND_ARG_OBJ_INFO(0, path, UI\\Draw\\Path, 0)
 	ZEND_ARG_INFO(0, with)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Pen::fill(UI\Draw\Path path, UI\Draw\Brush with)
-       proto void Pen::fill(UI\Draw\Path path, UI\Draw\Color with) */
-PHP_METHOD(DrawPen, fill) 
+/* {{{ proto Pen Pen::fill(UI\Draw\Path path, UI\Draw\Brush with)
+       proto Pen Pen::fill(UI\Draw\Path path, UI\Draw\Color with) */
+PHP_METHOD(DrawPen, fill)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
 	zval *path = NULL, *with = NULL;
@@ -96,16 +98,18 @@ PHP_METHOD(DrawPen, fill)
 	p = php_ui_path_fetch(path);
 
 	uiDrawFill(c->c, p->p, &u);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_stroke_info, 0, 0, 3)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_stroke_info, 0, 3, UI\\Draw\\Pen, 0)
 	ZEND_ARG_OBJ_INFO(0, path, UI\\Draw\\Path, 0)
 	ZEND_ARG_INFO(0, with)
 	ZEND_ARG_OBJ_INFO(0, stroke, UI\\Draw\\Stroke, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Pen::stroke(UI\Draw\Path path, UI\Draw\Brush with, UI\Draw\Stroke stroke)
-	   proto void Pen::stroke(UI\Draw\Path peth, UI\Draw\Color with, UI\Draw\Stroke stroke) */
+/* {{{ proto Pen Pen::stroke(UI\Draw\Path path, UI\Draw\Brush with, UI\Draw\Stroke stroke)
+	   proto Pen Pen::stroke(UI\Draw\Path peth, UI\Draw\Color with, UI\Draw\Stroke stroke) */
 PHP_METHOD(DrawPen, stroke)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
@@ -137,13 +141,15 @@ PHP_METHOD(DrawPen, stroke)
 	s = php_ui_stroke_fetch(stroke);
 
 	uiDrawStroke(c->c, p->p, &u, &s->s);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_transform_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_transform_info, 0, 1, UI\\Draw\\Pen, 0)
 	ZEND_ARG_OBJ_INFO(0, matrix, UI\\Draw\\Matrix, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Pen::transform(UI\Draw\Matrix matrix) */
+/* {{{ proto Pen Pen::transform(UI\Draw\Matrix matrix) */
 PHP_METHOD(DrawPen, transform)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
@@ -157,13 +163,15 @@ PHP_METHOD(DrawPen, transform)
 	m = php_ui_matrix_fetch(matrix);
 
 	uiDrawTransform(c->c, &m->m);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_clip_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_clip_info, 0, 1, UI\\Draw\\Pen, 0)
 	ZEND_ARG_OBJ_INFO(0, path, UI\\Draw\\Path, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Pen::clip(UI\Draw\Path path) */
+/* {{{ proto Pen Pen::clip(UI\Draw\Path path) */
 PHP_METHOD(DrawPen, clip)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
@@ -177,12 +185,14 @@ PHP_METHOD(DrawPen, clip)
 	p = php_ui_path_fetch(path);
 
 	uiDrawClip(c->c, p->p);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_save_info, 0, 0, 0)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_save_info, 0, 0, UI\\Draw\\Pen, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Pen::save() */
+/* {{{ proto Pen Pen::save() */
 PHP_METHOD(DrawPen, save)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
@@ -192,12 +202,14 @@ PHP_METHOD(DrawPen, save)
 	}
 
 	uiDrawSave(c->c);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_restore_info, 0, 0, 0)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_restore_info, 0, 0, UI\\Draw\\Pen, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Pen::restore() */
+/* {{{ proto Pen Pen::restore() */
 PHP_METHOD(DrawPen, restore)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
@@ -207,14 +219,16 @@ PHP_METHOD(DrawPen, restore)
 	}
 
 	uiDrawRestore(c->c);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_pen_write_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_write_info, 0, 2, UI\\Draw\\Pen, 0)
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 	ZEND_ARG_OBJ_INFO(0, layout, UI\\Draw\\Text\\Layout, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void UI\Draw\Pen::write(UI\Point point, UI\Draw\Text\Layout layout) */
+/* {{{ proto Pen UI\Draw\Pen::write(UI\Point point, UI\Draw\Text\Layout layout) */
 PHP_METHOD(DrawPen, write)
 {
 	php_ui_pen_t *pen = php_ui_pen_fetch(getThis());
@@ -229,7 +243,9 @@ PHP_METHOD(DrawPen, write)
 	layout = php_ui_layout_fetch(_layout);
 	point = php_ui_point_fetch(_point);
 
-	uiDrawText(pen->c, layout->l, point->x, point->y);	
+	uiDrawText(pen->c, layout->l, point->x, point->y);
+
+	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
 
 /* {{{ */

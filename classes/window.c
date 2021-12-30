@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/control.h>
 #include <classes/point.h>
 #include <classes/size.h>
@@ -151,11 +153,11 @@ PHP_METHOD(Window, __construct)
 	uiWindowOnContentSizeChanged(win->w, php_ui_window_resized_handler, win);
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_set_title_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_set_title_info, 0, 1, UI\\Window, 0)
 	ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Window::setTitle(string title) */
+/* {{{ proto Window Window::setTitle(string title) */
 PHP_METHOD(Window, setTitle)
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -166,6 +168,8 @@ PHP_METHOD(Window, setTitle)
 	}
 
 	uiWindowSetTitle(win->w, ZSTR_VAL(title));
+	
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -187,11 +191,11 @@ PHP_METHOD(Window, getTitle)
 	RETURN_STRING(uiWindowTitle(win->w));	
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_set_size_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_set_size_info, 0, 1, UI\\Window, 0)
 	ZEND_ARG_OBJ_INFO(0, size, UI\\Size, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Window::setSize(Size size) */
+/* {{{ proto Window Window::setSize(Size size) */
 PHP_METHOD(Window, setSize) 
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -209,13 +213,11 @@ PHP_METHOD(Window, setSize)
 	s = php_ui_size_fetch(size);
 
 	uiWindowSetContentSize(win->w, (int) s->width, (int) s->height);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-#if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_ui_window_get_size_info, 0, 0, UI\\Size, 0)
-#else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_window_get_size_info, 0, 0, IS_OBJECT, "UI\\Size", 0)
-#endif
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_get_size_info, 0, 0, UI\\Size, 0)
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Size Window::getSize(void) */
@@ -233,11 +235,11 @@ PHP_METHOD(Window, getSize)
 	php_ui_size_construct(return_value, (double) width, (double) height);	
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_set_full_screen_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_set_full_screen_info, 0, 1, UI\\Window, 0)
 	ZEND_ARG_TYPE_INFO(0, full, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Window::setFullScreen(bool full) */
+/* {{{ proto Window Window::setFullScreen(bool full) */
 PHP_METHOD(Window, setFullScreen)
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -248,6 +250,8 @@ PHP_METHOD(Window, setFullScreen)
 	}
 
 	uiWindowSetFullscreen(win->w, full);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -273,11 +277,11 @@ PHP_METHOD(Window, isFullScreen)
 	}
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_set_borders_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_set_borders_info, 0, 1, UI\\Window, 0)
 	ZEND_ARG_TYPE_INFO(0, borders, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Window::setBorders(bool borders) */
+/* {{{ proto Window Window::setBorders(bool borders) */
 PHP_METHOD(Window, setBorders)
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -288,6 +292,8 @@ PHP_METHOD(Window, setBorders)
 	}
 
 	uiWindowSetBorderless(win->w, !borders);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -313,11 +319,11 @@ PHP_METHOD(Window, hasBorders)
 	}
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_set_margin_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_set_margin_info, 0, 1, UI\\Window, 0)
 	ZEND_ARG_TYPE_INFO(0, margin, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Window::setMargin(bool margin) */
+/* {{{ proto Window Window::setMargin(bool margin) */
 PHP_METHOD(Window, setMargin)
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -328,6 +334,8 @@ PHP_METHOD(Window, setMargin)
 	}
 
 	uiWindowSetMargined(win->w, margin);
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -354,11 +362,11 @@ PHP_METHOD(Window, hasMargin)
 } /* }}} */
 
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_add_info, 0, 0, 4)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_add_info, 0, 1, UI\\Window, 0)
 	ZEND_ARG_OBJ_INFO(0, control, UI\\Control, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ */
+/* {{{ proto Window Window::add(Control) */
 PHP_METHOD(Window, add)
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -381,14 +389,16 @@ PHP_METHOD(Window, add)
 	if (zend_hash_next_index_insert(win->controls, control)) {
 		Z_ADDREF_P(control);
 	}
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_window_box_info, 0, 0, 2)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_window_box_info, 0, 2, UI\\Window, 0)
 	ZEND_ARG_TYPE_INFO(0, title,  IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, msg,    IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Window::msg(string title, string msg) */
+/* {{{ proto Window Window::msg(string title, string msg) */
 PHP_METHOD(Window, msg) 
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -399,9 +409,11 @@ PHP_METHOD(Window, msg)
 	}
 
 	uiMsgBox(win->w, ZSTR_VAL(title), ZSTR_VAL(msg));
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
-/* {{{ proto void Window::error(string title, string msg) */
+/* {{{ proto Window Window::error(string title, string msg) */
 PHP_METHOD(Window, error) 
 {
 	php_ui_window_t *win = php_ui_window_fetch(getThis());
@@ -412,6 +424,8 @@ PHP_METHOD(Window, error)
 	}
 
 	uiMsgBoxError(win->w, ZSTR_VAL(title), ZSTR_VAL(msg));
+
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
