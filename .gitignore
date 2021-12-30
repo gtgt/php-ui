@@ -23,7 +23,7 @@
 *.lo
 *.loT
 /modules
-ui.la
+/ui.la
 #{tasks,launch}.json helpers
 /*-helper.log
 /*-helper-*.log
