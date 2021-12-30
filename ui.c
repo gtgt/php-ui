@@ -80,6 +80,10 @@
 #define PHP_UI_LOOP	1<<0
 #define PHP_UI_WAIT	1<<1
 
+// hoping won't have to care about https://www.phpinternalsbook.com/php7/extensions_design/globals_management.html
+zend_fcall_info php_ui_should_quit_fci;
+zend_fcall_info_cache php_ui_should_quit_fcc;
+
 void php_ui_set_call(zend_object *object, const char *name, size_t nlength, zend_fcall_info *fci, zend_fcall_info_cache *fcc) {
 	zend_function *function = zend_hash_str_find_ptr(&object->ce->function_table, name, nlength);
 
@@ -272,6 +276,9 @@ PHP_RINIT_FUNCTION(ui)
 		return FAILURE;
 	}
 
+	php_ui_should_quit_fci = empty_fcall_info;
+	php_ui_should_quit_fcc = empty_fcall_info_cache;
+
 	uiMainSteps();
 
 	return SUCCESS;
@@ -285,6 +292,10 @@ PHP_RSHUTDOWN_FUNCTION(ui)
 #if 0
 	uiUninit();
 #endif
+	if (php_ui_should_quit_fci.size) {
+		zval_ptr_dtor(&php_ui_should_quit_fci.function_name);
+		php_ui_should_quit_fci.size = 0;
+	}
 
 	return SUCCESS;
 }
@@ -370,6 +381,54 @@ PHP_FUNCTION(UI_run)
 	uiMainStep((flags & PHP_UI_WAIT) == PHP_UI_WAIT);
 } /* }}} */
 
+int php_ui_should_quit_handler(void *arg) {
+	zval rv;
+	int result = 0;
+
+	if (!php_ui_should_quit_fci.size) { // will never enter here until some resetting variant of UI\onShouldQuit (possibly by allowing null arg), setting … = empty_fcall_info… (again) and connecting equivalent void func w/ uiOnShouldQuit
+//		uiQuit();
+
+		return 1;
+	}
+
+	ZVAL_UNDEF(&rv);
+
+	php_ui_should_quit_fci.retval = &rv;
+
+	if (php_ui_call(&php_ui_should_quit_fci, &php_ui_should_quit_fcc) != SUCCESS) {
+		return 0;
+	}
+
+	if (Z_TYPE(rv) != IS_UNDEF) {
+		result = 
+			(int) zval_get_long(&rv);
+		zval_ptr_dtor(&rv);
+	}
+
+	return result;
+}
+
+ZEND_BEGIN_ARG_INFO_EX(php_ui_should_quit_info, 0, 0, 1)
+	ZEND_ARG_CALLABLE_INFO(0, shouldQuit, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto void UI\run(callable shouldQuit(): bool)*/
+PHP_FUNCTION(UI_onShouldQuit)
+{
+	if (php_ui_should_quit_fci.size) {
+		zval_ptr_dtor(&php_ui_should_quit_fci.function_name);
+		php_ui_should_quit_fci.size = 0;
+	}
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "f*", &php_ui_should_quit_fci, &php_ui_should_quit_fcc, &php_ui_should_quit_fci.params, &php_ui_should_quit_fci.param_count) == FAILURE) {
+		return;
+	}
+
+	Z_ADDREF(php_ui_should_quit_fci.function_name);
+
+	uiOnShouldQuit(php_ui_should_quit_handler, NULL);
+} /* }}} */
+
 ZEND_BEGIN_ARG_INFO_EX(php_ui_quit_info, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
@@ -384,6 +443,7 @@ PHP_FUNCTION(UI_quit)
 const zend_function_entry ui_functions[] = {
 	ZEND_NS_NAMED_FE("UI", run, zif_UI_run, php_ui_run_info)
 	ZEND_NS_NAMED_FE("UI", quit, zif_UI_quit, php_ui_quit_info)
+	ZEND_NS_NAMED_FE("UI", onShouldQuit, zif_UI_onShouldQuit, php_ui_should_quit_info)
 	PHP_FE_END
 };
 /* }}} */
