@@ -4,7 +4,27 @@
       build:
         context   : ../..
         dockerfile: ui/.docker/services/ui/Dockerfile
-# I start it with a bash alias d-c=docker-compose and too complicated cd1:
-# : cd1 .docker d-c build && cd1 .docker d-c run --help -e COLUMNS=$COLUMNS -e LINES=$LINES -e DISPLAY=host.docker.internal:0 --rm --entrypoint bash ui
-# wh/ w/o cd1 it becomes:
-# (cd .docker && : d-c build && d-c run --help -e COLUMNS=$COLUMNS -e LINES=$LINES -e DISPLAY=host.docker.internal:0 --rm --entrypoint bash ui)
+        args:
+          - TERM
+      tty: true
+      environment:
+        DEBUG_COLORS: "true"
+        TERM: xterm-256color
+        COLORTERM: truecolor
+
+# I (vike) start it with a bash alias d-c=docker-compose and too complicated cd1:
+# `: cd1 .docker d-c build && cd1 .docker d-c run -e COLUMNS=$COLUMNS -e LINES=$LINES -e DISPLAY=host.docker.internal:0 --rm ui bash`
+# wh/ w/o cd1 it's like:
+# `(cd .docker && : d-c build && d-c run -e COLUMNS=$COLUMNS -e LINES=$LINES -e DISPLAY=host.docker.internal:0 --rm ui bash)`
+#
+# Some pointers on the setup if you're like me and not a docker pro: d-c build uses the Dockerfile which uses multistage:
+# * does a COPY of ../libui and a RUN of building it with meson setup --wipe build && ninja -C build && ninja -C build install
+# * does a COPY of this repo and a RUN of building it with phpize && ./configure && make clean & make
+#
+# Common:
+# : cd1 .docker d-c down --rmi all && : cd1 .docker d-c build --build-arg TERM=$TERM && cd1 .docker d-c run --rm -e COLUMNS=$COLUMNS -e LINES=$LINES -e TERM=$TERM -e DISPLAY=host.docker.internal:0    ui php -d extension=./modules/ui.so -c '$w=new \UI\Window("test",new \UI\Size(640,480));$w->show();\UI\run();' -a
+#
+# Personal:
+# : cd1 .docker d-c down --rmi all && : cd1 .docker d-c build --build-arg TERM=$TERM && cd1 .docker d-c run --rm -v /opt/local/etc/php74/php.ini:/usr/local/etc/php/php.ini -v "$PHP_LIBRARIES_ROOT:$PHP_LIBRARIES_ROOT" -e "PHP_LIBRARIES_ROOT=$PHP_LIBRARIES_ROOT" -e "VPHP_LIBRARIES_ROOTS=$VPHP_LIBRARIES_ROOTS" -e COLUMNS=$COLUMNS -e LINES=$LINES -e TERM=$TERM -e DISPLAY=host.docker.internal:0    ui bash # ulimit -c unlimited && php -d extension=./modules/ui.so ./launch-task.php # gdb php -c core
+# tnx https://jvns.ca/blog/2018/04/28/debugging-a-segfault-on-linux/
+#
