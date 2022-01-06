@@ -10,7 +10,7 @@
 	WORKDIR			/usr/src/libui
 	COPY	libui	.
 	
-	# failed attempt at colorizing meson/ninja - fuck it
+	# failed attempt at colorizing meson/ninja in d-c build - f*ck it
 	# even with: d-c down --rmi all
 	ARG TERM
 	ENV TERM=$TERM
@@ -53,13 +53,9 @@
 	COPY --from=builder	/usr/src/libui/ui_unix.h					/usr/local/include/
 	COPY --from=builder	/usr/src/libui/ui.h							/usr/local/include/
 	
-	WORKDIR			/usr/src/ui
-	COPY	ui		.
+	# for testing example like /usr/lib-src/libui/build/meson-out/histogram
+	RUN mkdir														/usr/lib-src
+	COPY --from=builder	/usr/src/libui								/usr/lib-src/libui
 	
-	#cspell:words phpize
-	RUN :	true										\
-		&&	phpize										\
-		&&	./configure									\
-		&&	make clean									\
-		&&	make										\
-		&&	true										;
+	WORKDIR			/usr/src/ui
+	
