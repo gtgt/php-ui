@@ -33,6 +33,8 @@
 /.vscode/launch/*-vphpK_*
 /.vscode/launch/*-vphpK.*
 /launch-task.php
+# personal (it's an em-dash)
+*—*
 # later
 /.cache
 /compile_commands.json
