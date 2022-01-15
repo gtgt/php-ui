@@ -255,6 +255,42 @@ PHP_METHOD(DrawMatrix, transformSize)
 	return;
 } /* }}} */
 
+void php_ui_matrix_points(zval *zv, php_ui_matrix_t *matrix) {
+	zval point1, point2, point3;
+
+	array_init(zv);
+
+	php_ui_point_construct(&point1,
+		matrix->m.M11,
+		matrix->m.M12);
+	add_index_zval(zv, 0, &point1);
+
+	php_ui_point_construct(&point2,
+		matrix->m.M21,
+		matrix->m.M22);
+	add_index_zval(zv, 1, &point2);
+
+	php_ui_point_construct(&point3,
+		matrix->m.M31,
+		matrix->m.M32);
+	add_index_zval(zv, 2, &point3);
+}
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_matrix_get_points_info, 0, 0, IS_ARRAY, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto array Matrix::getPoints(void) */
+PHP_METHOD(DrawMatrix, getPoints)
+{
+	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	php_ui_matrix_points(return_value, matrix);
+} /* }}} */
+
 /* {{{ */
 const zend_function_entry php_ui_matrix_methods[] = {
 	PHP_ME(DrawMatrix, translate,       php_ui_matrix_translate_info,       ZEND_ACC_PUBLIC)
@@ -266,6 +302,7 @@ const zend_function_entry php_ui_matrix_methods[] = {
 	PHP_ME(DrawMatrix, invert,          php_ui_matrix_invert_info,          ZEND_ACC_PUBLIC)
 	PHP_ME(DrawMatrix, transformPoint,  php_ui_matrix_transform_point_info, ZEND_ACC_PUBLIC)
 	PHP_ME(DrawMatrix, transformSize,   php_ui_matrix_transform_size_info,  ZEND_ACC_PUBLIC)
+	PHP_ME(DrawMatrix, getPoints,       php_ui_matrix_get_points_info,      ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
