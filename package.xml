@@ -1,146 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.9.4" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
-	<name>UI</name>
-	<channel>pecl.php.net</channel>
-	<summary>UI API</summary>
-	<description>An OO wrapper around libui</description>
-	<lead>
-		<name>Joe Watkins</name>
-		<user>krakjoe</user>
-		<email>krakjoe@php.net</email>
-		<active>no</active>
-	</lead>
-	<developer>
-		<name>Tamás Gere</name>
-		<user>gt</user>
-		<email>788449+gtgt@users.noreply.github.com</email>
-		<active>yes</active>
-	</developer>
-	<date>2016-11-02</date>
-	<time>07:00:00</time>
-	<version>
-		<release>2.1.0</release>
-		<api>2.1.0</api>
-	</version>
-	<stability>
-		<release>beta</release>
-		<api>beta</api>
-	</stability>
-	<license uri="http://www.php.net/license">PHP License</license>
-	<notes>
-		Add protected parent property for controls
-		Fix Control::getParent
-		Fix Control::destroy faulting when parent is still set
-		Window::onUncaughtException will be invoked when callbacks throw exceptions
-		Window::onResized will be invoked when the user resizes the window
-		Progress::setValue throw exception when value is out of range
-	</notes>
-	<contents>
-		<dir name="/">
-			<dir name="examples">
-				<file name="histogram.php" role="doc"/>
-				<file name="gallery.php" role="doc"/>
-				<file name="snake.php" role="doc"/>
-				<file name="starfield.php" role="doc"/>
-			</dir>
-			<dir name="classes">
-				<file name="common.h" role="src"/>
-				<file name="area.c" role="src"/>
-				<file name="area.h" role="src"/>
-				<file name="box.c" role="src"/>
-				<file name="box.h" role="src"/>
-				<file name="brush.c" role="src"/>
-				<file name="brush.h" role="src"/>
-				<file name="button.c" role="src"/>
-				<file name="button.h" role="src"/>
-				<file name="cbutton.c" role="src"/>
-				<file name="cbutton.h" role="src"/>
-				<file name="fbutton.c" role="src"/>
-				<file name="fbutton.h" role="src"/>
-				<file name="check.c" role="src"/>
-				<file name="check.h" role="src"/>
-				<file name="color.c" role="src"/>
-				<file name="color.h" role="src"/>
-				<file name="combo.c" role="src"/>
-				<file name="combo.h" role="src"/>
-				<file name="control.c" role="src"/>
-				<file name="control.h" role="src"/>
-				<file name="descriptor.c" role="src"/>
-				<file name="descriptor.h" role="src"/>
-				<file name="attributed.c" role="src"/>
-				<file name="attributed.h" role="src"/>
-				<file name="ecombo.c" role="src"/>
-				<file name="ecombo.h" role="src"/>
-				<file name="exceptions.c" role="src"/>
-				<file name="exceptions.h" role="src"/>
-				<file name="executor.c" role="src"/>
-				<file name="executor.h" role="src"/>
-				<file name="entry.c" role="src"/>
-				<file name="entry.h" role="src"/>
-				<file name="form.c" role="src"/>
-				<file name="form.h" role="src"/>
-				<file name="grid.c" role="src"/>
-				<file name="grid.h" role="src"/>
-				<file name="group.c" role="src"/>
-				<file name="group.h" role="src"/>
-				<file name="item.c" role="src"/>
-				<file name="item.h" role="src"/>
-				<file name="label.c" role="src"/>
-				<file name="label.h" role="src"/>
-				<file name="layout.c" role="src"/>
-				<file name="layout.h" role="src"/>
-				<file name="matrix.c" role="src"/>
-				<file name="matrix.h" role="src"/>
-				<file name="menu.c" role="src"/>
-				<file name="menu.h" role="src"/>
-				<file name="multi.c" role="src"/>
-				<file name="multi.h" role="src"/>
-				<file name="path.c" role="src"/>
-				<file name="path.h" role="src"/>
-				<file name="pen.c" role="src"/>
-				<file name="pen.h" role="src"/>
-				<file name="picker.c" role="src"/>
-				<file name="picker.h" role="src"/>
-				<file name="point.c" role="src"/>
-				<file name="point.h" role="src"/>
-				<file name="progress.c" role="src"/>
-				<file name="progress.h" role="src"/>
-				<file name="radio.c" role="src"/>
-				<file name="radio.h" role="src"/>
-				<file name="separator.c" role="src"/>
-				<file name="separator.h" role="src"/>
-				<file name="size.c" role="src"/>
-				<file name="size.h" role="src"/>
-				<file name="slider.c" role="src"/>
-				<file name="slider.h" role="src"/>
-				<file name="spin.c" role="src"/>
-				<file name="spin.h" role="src"/>
-				<file name="stroke.c" role="src"/>
-				<file name="stroke.h" role="src"/>
-				<file name="tab.c" role="src"/>
-				<file name="tab.h" role="src"/>
-				<file name="window.c" role="src"/>
-				<file name="window.h" role="src"/>
-			</dir>
-			<file name="config.m4" role="src"/>
-			<file name="config.w32" role="src"/>
-			<file name="LICENSE" role="doc"/>
-			<file name="ui.c" role="src"/>
-			<file name="php_ui.h" role="src"/>
-			<file name="README.md" role="doc"/>
-		</dir>
-	</contents>
-	<dependencies>
-		<required>
-			<php>
-				<min>7.0.0RC5</min>
-			</php>
-			<pearinstaller>
-				<min>1.4.0b1</min>
-			</pearinstaller>
-		</required>
-	</dependencies>
-	<providesextension>ui</providesextension>
-	<extsrcrelease/>
+<package packagerversion="1.9.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>UI</name>
+ <channel>pecl.php.net</channel>
+ <summary>UI API</summary>
+ <description>An OO wrapper around libui</description>
+ <lead>
+  <name>Joe Watkins</name>
+  <user>krakjoe</user>
+  <email>krakjoe@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2016-11-02</date>
+ <time>07:00:00</time>
+ <version>
+  <release>2.0.0</release>
+  <api>2.0.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP License</license>
+ <notes>
+   Add protected parent property for controls
+   Fix Control::getParent
+   Fix Control::destroy faulting when parent is still set
+   Window::onUncaughtException will be invoked when callbacks throw exceptions
+   Window::onResized will be invoked when the user resizes the window
+   Progress::setValue throw exception when value is out of range
+ </notes>
+ <contents>
+	<dir name="/">
+	  <dir name="examples">
+		<file name="histogram.php" role="doc" />
+		<file name="gallery.php" role="doc" />
+		<file name="snake.php" role="doc"/>
+		<file name="starfield.php" role="doc"/>
+	  </dir>
+	  <dir name="classes">
+		<file name="common.h" role="src" />
+		<file name="area.c" role="src" />
+		<file name="area.h" role="src" />
+		<file name="box.c" role="src" />
+		<file name="box.h" role="src" />
+		<file name="brush.c" role="src" />
+		<file name="brush.h" role="src" />
+		<file name="button.c" role="src" />
+		<file name="button.h" role="src" />
+		<file name="cbutton.c" role="src" />
+		<file name="cbutton.h" role="src" />
+		<file name="fbutton.c" role="src" />
+		<file name="fbutton.h" role="src" />
+		<file name="check.c" role="src" />
+		<file name="check.h" role="src" />
+		<file name="color.c" role="src" />
+		<file name="color.h" role="src" />
+		<file name="combo.c" role="src" />
+		<file name="combo.h" role="src" />
+		<file name="control.c" role="src" />
+		<file name="control.h" role="src" />
+		<file name="descriptor.c" role="src" />
+		<file name="descriptor.h" role="src" />
+		<file name="attributed.c" role="src" />
+		<file name="attributed.h" role="src" />
+		<file name="ecombo.c" role="src" />
+		<file name="ecombo.h" role="src" />
+		<file name="exceptions.c" role="src" />
+		<file name="exceptions.h" role="src" />
+		<file name="executor.c" role="src" />
+		<file name="executor.h" role="src" />
+		<file name="entry.c" role="src" />
+		<file name="entry.h" role="src" />
+		<file name="form.c" role="src" />
+		<file name="form.h" role="src" />
+		<file name="grid.c" role="src" />
+		<file name="grid.h" role="src" />
+		<file name="group.c" role="src" />
+		<file name="group.h" role="src" />
+		<file name="item.c" role="src" />
+		<file name="item.h" role="src" />
+		<file name="label.c" role="src" />
+		<file name="label.h" role="src" />
+		<file name="layout.c" role="src" />
+		<file name="layout.h" role="src" />
+		<file name="matrix.c" role="src" />
+		<file name="matrix.h" role="src" />
+		<file name="menu.c" role="src" />
+		<file name="menu.h" role="src" />
+		<file name="multi.c" role="src" />
+		<file name="multi.h" role="src" />
+		<file name="path.c" role="src" />
+		<file name="path.h" role="src" />
+		<file name="path_item.c" role="src" />
+		<file name="path_item.h" role="src" />
+		<file name="pen.c" role="src" />
+		<file name="pen.h" role="src" />
+		<file name="picker.c" role="src" />
+		<file name="picker.h" role="src" />
+		<file name="point.c" role="src" />
+		<file name="point.h" role="src" />
+		<file name="progress.c" role="src" />
+		<file name="progress.h" role="src" />
+		<file name="radio.c" role="src" />
+		<file name="radio.h" role="src" />
+		<file name="separator.c" role="src" />
+		<file name="separator.h" role="src" />
+		<file name="size.c" role="src" />
+		<file name="size.h" role="src" />
+		<file name="slider.c" role="src" />
+		<file name="slider.h" role="src" />
+		<file name="spin.c" role="src" />
+		<file name="spin.h" role="src" />
+		<file name="stroke.c" role="src" />
+		<file name="stroke.h" role="src" />
+		<file name="tab.c" role="src" />
+		<file name="tab.h" role="src" />
+		<file name="window.c" role="src" />
+		<file name="window.h" role="src" />
+	 </dir>
+	<file name="config.m4" role="src" />
+	<file name="config.w32" role="src" />
+	<file name="LICENSE" role="doc" />
+	<file name="ui.c" role="src" />
+	<file name="php_ui.h" role="src" />
+	<file name="README.md" role="doc" />
+ </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>7.0.0RC5</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>ui</providesextension>
+ <extsrcrelease />
 </package>
