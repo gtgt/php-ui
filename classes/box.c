@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/exceptions.h>
 #include <classes/control.h>
 #include <classes/box.h>
@@ -167,11 +169,60 @@ PHP_METHOD(Box, delete)
 	RETURN_FALSE;
 } /* }}} */
 
-ZEND_BEGIN_ARG_INFO_EX(php_ui_box_set_padded_info, 0, 0, 1)
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_box_get_count_info, 0, 0, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto int Box::getCount(void) */
+PHP_METHOD(Box, getCount)
+{
+	php_ui_box_t *box = php_ui_box_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+	
+	RETURN_LONG(zend_hash_num_elements(box->controls) - 1);
+} /* }}} */
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_box_add_info, 0, 1, UI\\Controls\\Box, 0)
+	ZEND_ARG_OBJ_INFO(0, control, UI\\Control, 0)
+	ZEND_ARG_TYPE_INFO(0, stretchy, _IS_BOOL, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Box Box::add(Control control [, bool stretchy = false]) */
+PHP_METHOD(Box, add)
+{
+	php_ui_box_t *box = php_ui_box_fetch(getThis());
+	zval *control = NULL;
+	zend_bool stretchy = 0;
+	php_ui_control_t *ctrl;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|b", &control, uiControl_ce, &stretchy) != SUCCESS) {
+		return;
+	}
+
+	ctrl = php_ui_control_fetch(control);
+
+	if (!php_ui_control_set_parent(control, getThis())) {
+		return;
+	}
+
+	uiBoxAppend(box->b, ctrl->control, stretchy);
+
+	if (zend_hash_next_index_insert(box->controls, control)) {
+		Z_ADDREF_P(control);
+	}
+
+	RETURN_ZVAL(getThis(), 1, 0);
+} /* }}} */
+
+// TODO: remove - since it WOULD return $this it WOULD need to throw
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_box_set_padded_info, 0, 1, UI\\Controls\\Box, 0)
 	ZEND_ARG_TYPE_INFO(0, padded, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Box::setPadded(bool padded) */
+/* {{{ proto Box Box::setPadded(bool padded) */
 PHP_METHOD(Box, setPadded) 
 {
 	php_ui_box_t *box = php_ui_box_fetch(getThis());
@@ -182,6 +233,8 @@ PHP_METHOD(Box, setPadded)
 	}
 
 	uiBoxSetPadded(box->b, padded);
+	
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -213,6 +266,8 @@ const zend_function_entry php_ui_box_methods[] = {
 	PHP_ME(Box, getOrientation,  php_ui_box_get_orientation_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Box, append,          php_ui_box_append_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Box, delete,          php_ui_box_delete_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Box, add,             php_ui_box_add_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Box, getCount,        php_ui_box_get_count_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Box, setPadded,       php_ui_box_set_padded_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Box, isPadded,        php_ui_box_is_padded_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
