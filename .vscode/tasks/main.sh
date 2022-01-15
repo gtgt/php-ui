@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-	phpize74 && ./configure
+	phpize && CFLAGS='-g -O0' ./configure
 	
