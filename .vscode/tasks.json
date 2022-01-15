@@ -6,7 +6,12 @@
 			"dependsOn": "build",
 			"label": "vphp -K launch-task.php",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpK.sh"],
-			"options": {"cwd": "${workspaceFolder}"},
+			"options": {"cwd": "${workspaceFolder}","env":{
+//				"phpv": "74", // macports (Darwin), not Linux
+				"phpbin_include": ".*", // Linux, not macports (Darwin)
+				"VPHP_LIBRARIES_ROOTS": "${env:HOME}/shell/library/php/com/dyn_o_saur/bluelephant:${env:HOME}/shell/library/sysepos/Darwin/php:${env:HOME}/shell/library/php", // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
+				"PHP_LIBRARIES_ROOT": "${env:HOME}/shell/library/php", // sorry, but vscode stumps on resolving my shell env
+			}},
 		},
 		{
 			"group": "build",
@@ -16,16 +21,29 @@
 		},
 		{
 			"group": "build",
-			"isBackground": true,
+//			"isBackground": true,
 			"dependsOn": "build",
-			"label": "debug-main",
+			"label": "launch main",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main.sh"],
 			"options": {"cwd": "${workspaceFolder}"},
+			"osx"	: {"options": {"env": {"phpv": "74"}}}, // macports
+			"linux"	: {"options": {"env": {"phpbin_include": ".*"}}}, // Dockerfile decides version
 		},
 		{
 			"group": "build",
+//			"isBackground": true,
 			"dependsOn": "build",
-			"label": "debug-main-vphpX__likeExit_fork_",
+			"label": "launch main-vphpX__likeExit_exec_",
+			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX__likeExit_exec_.sh"],
+			"options": {"cwd": "${workspaceFolder}"},
+			"osx"	: {"options": {"env": {"phpv": "74"}}}, // macports
+			"linux"	: {"options": {"env": {"phpbin_include": ".*"}}}, // Dockerfile decides version
+		},
+		{
+			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
+//			"isBackground": true,
+			"dependsOn": "build",
+			"label": "launch main-vphpX__likeExit_fork_",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX__likeExit_fork_.sh"],
 			"options": {"cwd": "${workspaceFolder}"},
 		},
@@ -42,6 +60,12 @@
 			"options": {"cwd": "${workspaceFolder}"},
 		},
 		{
+			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
+			"label": "build with compiledb",
+			"type": "process", "command": "compiledb", "args": ["make"],
+			"options": {"cwd": "${workspaceFolder}"},
+		},
+		{
 			"group": "build",
 			"label": "clean && build",
 			"dependsOn": [
@@ -50,6 +74,45 @@
 			],
 			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
+			"label": "clean && build with compiledb",
+			"dependsOn": [
+				"clean",
+				"build with compiledb",
+			],
+			"dependsOrder": "sequence",
+			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
+			"label": "configure for php && clean && build",
+			"dependsOn": [
+				"configure for php",
+				"clean",
+				"build",
+			],
+			"dependsOrder": "sequence",
+			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
+			"label": "configure for php && clean && build with compiledb",
+			"dependsOn": [
+				"configure for php",
+				"clean",
+				"build with compiledb",
+			],
+			"dependsOrder": "sequence",
+			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
+			"label": "configure for php",
+//			"type": "shell", "command": "PHP_AUTOCONF=/opt/local/bin/autoconf PHP_AUTOHEADER=/opt/local/bin/autoheader /opt/local/bin/phpize74 && ./configure",
+			"type": "shell", "command": "${env:HOME}/shell/library/script/various/vscode-helper .vscode/tasks/main.sh", // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
+			"options": {"cwd": "${workspaceFolder}"},
 		},
 		{
 			"group": "build",
@@ -64,9 +127,20 @@
 		},
 		{
 			"group": "build",
+			"label": "configure for php74 && clean && build with compiledb",
+			"dependsOn": [
+				"configure for php74",
+				"clean",
+				"build with compiledb",
+			],
+			"dependsOrder": "sequence",
+			"type": "shell", "command": ": dependsOn finished",
+		},
+		{
+			"group": "build",
 			"label": "configure for php74",
 //			"type": "shell", "command": "PHP_AUTOCONF=/opt/local/bin/autoconf PHP_AUTOHEADER=/opt/local/bin/autoheader /opt/local/bin/phpize74 && ./configure",
-			"type": "shell", "command": "${env:HOME}/shell/library/script/various/vscode-helper .vscode/tasks/main.sh", // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
+			"type": "shell", "command": "${env:HOME}/shell/library/script/various/vscode-helper .vscode/tasks/main-php74.sh", // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 			"options": {"cwd": "${workspaceFolder}"},
 		},
 /*		{
