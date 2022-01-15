@@ -27,10 +27,13 @@
 #include <classes/size.h>
 #include <classes/path.h>
 #include <classes/matrix.h>
+#include <classes/path_item.h>
 
 zend_object_handlers php_ui_path_handlers;
 
 zend_class_entry *uiDrawPath_ce;
+
+extern int php_ui_call(zend_fcall_info *fci, zend_fcall_info_cache *fcc);
 
 zend_object* php_ui_path_create(zend_class_entry *ce) {
 	php_ui_path_t *path = 
@@ -293,6 +296,70 @@ PHP_METHOD(DrawPath, transform)
 } /* }}} */
 #endif
 
+#ifdef LIBUI_HAS_DRAW_PATH_FOR_EACH
+struct php_ui_for_each_arg {
+	zend_fcall_info fci;
+	zend_fcall_info_cache fcc;
+};
+
+uiForEach php_ui_for_each_handler(uiDrawPathItem item, void *arg) {
+	struct php_ui_for_each_arg a = *(struct php_ui_for_each_arg*) arg;
+
+	zval rv;
+	zval path_item;
+
+	int result = uiForEachContinue;
+
+	if (!a.fci.size) {
+		return uiForEachStop;
+	}
+
+	php_ui_path_item_construct(&path_item, &item);
+	zend_fcall_info_argn(&a.fci, 1, &path_item);
+
+	a.fci.param_count = 1;
+
+	ZVAL_UNDEF(&rv);
+
+	a.fci.retval = &rv;
+
+	if (php_ui_call(&a.fci, &a.fcc) != SUCCESS) {
+		return uiForEachStop;
+	}
+
+	zend_fcall_info_args_clear(&a.fci, 1); // UNSURE
+
+	if (Z_TYPE(rv) != IS_UNDEF) {
+		result = 
+			(int) zval_get_long(&rv);
+		zval_ptr_dtor(&rv);
+	}
+
+	zval_ptr_dtor(&path_item);
+
+	return result;
+}
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_for_each_info, 0, 1, UI\\Draw\\Path, 0)
+	ZEND_ARG_CALLABLE_INFO(0, forEach, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Path UI\Draw\Path::forEach(callable forEach(): UI\forEachStop|UI\forEachContinue) */
+PHP_METHOD(DrawPath, forEach)
+{
+	php_ui_path_t *path = php_ui_path_fetch(getThis());
+	struct php_ui_for_each_arg arg;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "f", &arg.fci, &arg.fcc) == FAILURE) {
+		return;
+	}
+
+	uiDrawPathForEach(path->p, php_ui_for_each_handler, &arg);
+
+	RETURN_ZVAL(getThis(), 1, 0)
+} /* }}} */
+#endif
+
 /* {{{ */
 const zend_function_entry php_ui_path_methods[] = {
 	PHP_ME(DrawPath, __construct, php_ui_path_construct_info, ZEND_ACC_PUBLIC)
@@ -309,6 +376,9 @@ const zend_function_entry php_ui_path_methods[] = {
 	#endif
 	#ifdef LIBUI_HAS_DRAW_PATH_COPY_BY_TRANSFORM
 	PHP_ME(DrawPath, transform, php_ui_path_transform_info, ZEND_ACC_PUBLIC)
+	#endif
+	#ifdef LIBUI_HAS_DRAW_PATH_FOR_EACH
+	PHP_ME(DrawPath, forEach, php_ui_path_for_each_info, ZEND_ACC_PUBLIC)
 	#endif
 	PHP_FE_END
 }; /* }}} */

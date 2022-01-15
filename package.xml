@@ -91,6 +91,8 @@
 		<file name="multi.h" role="src" />
 		<file name="path.c" role="src" />
 		<file name="path.h" role="src" />
+		<file name="path_item.c" role="src" />
+		<file name="path_item.h" role="src" />
 		<file name="pen.c" role="src" />
 		<file name="pen.h" role="src" />
 		<file name="picker.c" role="src" />

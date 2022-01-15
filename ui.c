@@ -69,6 +69,7 @@
 #include <classes/area.h>
 #include <classes/pen.h>
 #include <classes/path.h>
+#include <classes/path_item.h>
 #include <classes/color.h>
 #include <classes/brush.h>
 #include <classes/stroke.h>
@@ -193,6 +194,9 @@ PHP_MINIT_FUNCTION(ui)
 	REGISTER_NS_LONG_CONSTANT("UI", "Loop", PHP_UI_LOOP, CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("UI", "Wait", PHP_UI_WAIT, CONST_CS|CONST_PERSISTENT);
 
+	REGISTER_NS_LONG_CONSTANT("UI", "forEachStop", uiForEachStop, CONST_CS|CONST_PERSISTENT);
+	REGISTER_NS_LONG_CONSTANT("UI", "forEachContinue", uiForEachContinue, CONST_CS|CONST_PERSISTENT);
+
 	PHP_MINIT(UI_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_Executor)(INIT_FUNC_ARGS_PASSTHRU);
 
@@ -227,6 +231,7 @@ PHP_MINIT_FUNCTION(ui)
 	PHP_MINIT(UI_Area)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawPen)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawPath)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(UI_DrawPathItem)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawColor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawBrush)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawStroke)(INIT_FUNC_ARGS_PASSTHRU);
