@@ -418,7 +418,7 @@ PHP_FUNCTION(UI_onShouldQuit)
 		php_ui_should_quit_fci.size = 0;
 	}
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "f*", &php_ui_should_quit_fci, &php_ui_should_quit_fcc, &php_ui_should_quit_fci.params, &php_ui_should_quit_fci.param_count) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "f", &php_ui_should_quit_fci, &php_ui_should_quit_fcc) == FAILURE) {
 		return;
 	}
 
