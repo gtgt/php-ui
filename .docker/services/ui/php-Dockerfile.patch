@@ -1,0 +1,34 @@
+--- Dockerfile	2021-12-16 16:43:46.000000000 +0100
++++ php-Dockerfile	2022-01-14 17:46:22.000000000 +0100
+@@ -50,11 +50,11 @@
+ 
+ # Apply stack smash protection to functions using local buffers and alloca()
+ # Make PHP's main executable position-independent (improves ASLR security mechanism, and has no performance impact on x86_64)
+-# Enable optimization (-O2)
++# Generate debug information (-g) and disable optimization (-O0)
+ # Enable linker optimization (this sorts the hash buckets to improve cache locality, and is non-default)
+ # https://github.com/docker-library/php/issues/272
+ # -D_LARGEFILE_SOURCE and -D_FILE_OFFSET_BITS=64 (https://www.php.net/manual/en/intro.filesystem.php)
+-ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
++ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -g -O0 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+ ENV PHP_CPPFLAGS="$PHP_CFLAGS"
+ ENV PHP_LDFLAGS="-Wl,-O1 -pie"
+ 
+@@ -177,9 +177,6 @@
+ 		/usr/local \
+ 		-type f \
+ 		-perm '/0111' \
+-		-exec sh -euxc ' \
+-			strip --strip-all "$@" || : \
+-		' -- '{}' + \
+ 	; \
+ 	make clean; \
+ 	\
+@@ -187,7 +184,6 @@
+ 	cp -v php.ini-* "$PHP_INI_DIR/"; \
+ 	\
+ 	cd /; \
+-	docker-php-source delete; \
+ 	\
+ # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+ 	apt-mark auto '.*' > /dev/null; \

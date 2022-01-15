@@ -1,0 +1,42 @@
+# NOTE: This file is specified in dockerComposeFile of devcontainer.json but also in .gitignore while still
+# acting as example; intentional changes require `git add -f .docker/docker-compose.extend.local.yml`
+  version: '3'
+  services:
+    ui:
+      user: vscode
+      volumes:
+        - php_ui_extensions:/home/vscode/.vscode-server/extensions
+        - php_ui_extensions_insiders:/home/vscode/.vscode-server-insiders/extensions
+        
+        - "..:/usr/src/ui"
+        - "../../libui:/usr/src/libui"
+        
+        - "/opt/local/etc/php74/php.ini:/usr/local/etc/php/php.ini" # macports
+        
+        - "${HOME}/shell:/home/vscode/shell" # contains PHP_LIBRARIES_ROOT # personal/non-public setup # traditionally this lives under my user (~vike), even for other users, but let's not go there..
+        - php_ui__v_path:/home/vscode/.v # personal/non-public setup # suboptimal name (rhs)
+        
+        - "${HOME}/.inputrc:/home/vscode/.inputrc"
+        #cspell:ignore inputrc
+        
+        - "${HOME}/.bash_profile_paths:/home/vscode/.bash_profile_paths" # personal/non-public setup
+        
+        - "${HOME}/.bash_profile:/home/vscode/.bash_profile" # not uncommon setup (more common in Darwin?)
+        # Apparently the (way) bash (that) is started here only loads bashrc and not bash_profile
+        # But now I want to know, and possibly from my .bash_profile do, what's in that .bashrc
+        # - "${HOME}/.bash_profile:/home/vscode/.bashrc"
+      command:
+       - bash
+       - -cx
+       - |
+         mv /home/vscode/.bashrc{,-disabled}||: # disable image default
+         ln -s .bash_profile ~/.bashrc
+         ln -s shell/library/sysepos/Linux/support/source-highlight /home/vscode/.source-highlight
+         sudo sed -Ei '' '/^\s*(Defaults)\s+(secure_path)\s*(\+?=)\s*"?(.*)"?\s*(\#.*)?/s//#&/' /etc/sudoers # disable secure_path by out-commenting (/^\s*(#[#\s]*)\s*…/ would match any out-commented …)
+         sleep infinity
+  
+  volumes:
+    php_ui_extensions:
+    php_ui_extensions_insiders:
+    php_ui__v_path:
+
