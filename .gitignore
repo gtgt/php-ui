@@ -33,3 +33,4 @@
 /launch-task.php
 # later
 /.cache
+/compile_commands.json
