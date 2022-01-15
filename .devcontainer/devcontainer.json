@@ -1,0 +1,78 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/docker-from-docker-compose
+{
+	"name": "Docker from Docker Compose",
+	"dockerComposeFile": [
+		"../.docker/docker-compose.yml",
+//		"../.docker/docker-compose.local.yml",
+//		"../.docker/docker-compose.extend.yml",
+		"../.docker/docker-compose.extend.local.yml",
+	],
+	"service": "ui",
+	"workspaceFolder": "/usr/src/ui",
+
+	// Use this environment variable if you need to bind mount your local source code into a new container.
+	"remoteEnv": {
+		"LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+	},
+	
+	// Set *default* container specific settings.json values on container create.
+	"settings": {},
+
+	//cspell:disable
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-vscode.cpptools",	// more well working debug, c
+		"vadimcn.vscode-lldb",	// less well working debug, c
+		
+		// more important, syntax and intellisense, c
+		"llvm-vs-code-extensions.vscode-clangd",
+		"mitaki28.vscode-clang",
+		
+		// more important, php
+		"bmewburn.vscode-intelephense-client",
+		"robberphex.php-debug",
+		
+		// less important, php
+		"tysonandre.php-phan",
+		"valeryanm.vscode-phpsab",
+		
+		// more important, text tools
+		"johnnywong.vscode-ts-whitespace-converter",
+		"chunsen.bracket-select",
+		
+		// less important, text syntax
+		"exodiusstudios.comment-anchors",
+		"streetsidesoftware.code-spell-checker",
+		"rbalet.code-spell-checker-fullstack",
+//		"streetsidesoftware.code-spell-checker-swedish",
+		
+		// file tools
+		"mrmlnc.vscode-duplicate",
+		"jit-y.vscode-advanced-open-file",
+		"wehrstedtcoding.file-picker",
+		
+		// more important, ui
+		"seeminglyscience.terminal-input",
+		
+		// less important, ui
+		"tygooch.autoclose-find",
+	],
+	//cspell:enable
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "docker --version",
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode",
+	"features": {
+		"docker-in-docker": "20.10",
+		"docker-from-docker": "20.10",
+		"git": "os-provided",
+		"github-cli": "latest",
+		"sshd": "latest"
+	}
+}
