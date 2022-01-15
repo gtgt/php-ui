@@ -94,7 +94,7 @@ void php_ui_set_call(zend_object *object, const char *name, size_t nlength, zend
 	fci->size = sizeof(zend_fcall_info);
 	fci->object = object;
 #if PHP_VERSION_ID < 80000
-	fci->no_separation = 1;
+	fci->no_separation = 1; // "This is where the copy-on-write concept comes in: […] Separation is just a fancy word for duplicating the structure." - https://www.phpinternalsbook.com/php7/zvals/memory_management.html
 #endif
 
 #if PHP_VERSION_ID < 70300
@@ -400,7 +400,7 @@ int php_ui_should_quit_handler(void *arg) {
 	}
 
 	if (Z_TYPE(rv) != IS_UNDEF) {
-		result = 
+		result =
 			(int) zval_get_long(&rv);
 		zval_ptr_dtor(&rv);
 	}
