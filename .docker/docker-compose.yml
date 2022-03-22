@@ -24,7 +24,7 @@
         DEBUG_COLORS: "true"
         # truecolor is aka 24bit which I (vike) doubt the macOS iTerm.app I use has - I have only worked with with 1byte=8bit xterm-256color; I have also never used DEBUG_COLORS nor COLORTERM, just found them searching for COLUMNS / ROWS & TERM=xterm-256color issues
         # COLORTERM: truecolor
-        DISPLAY: host.docker.internal:0
+        DISPLAY: host.docker.internal:0 # TODO see launch.json for TODOC
       volumes:
         - "..:/usr/src/ui"
   

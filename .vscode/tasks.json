@@ -2,9 +2,10 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"group": "build",
-			"dependsOn": "build",
 			"label": "vphp -K launch-task.php",
+			"dependsOrder": "sequence", "dependsOn": [
+				"build",
+			],
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpK.sh"],
 			"options": {"cwd": "${workspaceFolder}","env":{
 //				"phpv": "74", // macports (Darwin), not Linux
@@ -12,140 +13,139 @@
 				"VPHP_LIBRARIES_ROOTS": "${env:HOME}/shell/library/php/com/dyn_o_saur/bluelephant:${env:HOME}/shell/library/sysepos/Darwin/php:${env:HOME}/shell/library/php", // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
 				"PHP_LIBRARIES_ROOT": "${env:HOME}/shell/library/php", // sorry, but vscode stumps on resolving my shell env
 			}},
+			"group": "build",
 		},
 		{
-			"group": "build",
 			"label": "rm launch-task.php",
 			"type": "process", "command": "rm", "args": ["-f", "launch-task.php"],
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "build",
 		},
 		{
-			"group": "build",
-//			"isBackground": true,
-			"dependsOn": "build",
 			"label": "launch main",
+			"dependsOrder": "sequence", "dependsOn": [
+				"build",
+			],
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main.sh"],
+//			"isBackground": true,
 			"options": {"cwd": "${workspaceFolder}"},
 			"osx"	: {"options": {"env": {"phpv": "74"}}}, // macports
-			"linux"	: {"options": {"env": {"phpbin_include": ".*"}}}, // Dockerfile decides version
-		},
-		{
+			"linux"	: {"options": {"env": {"phpbin_include": ".*"}}}, // Dockerfile installed
 			"group": "build",
-//			"isBackground": true,
-			"dependsOn": "build",
+		},
+		{
 			"label": "launch main-vphpX__likeExit_exec_",
+			"dependsOrder": "sequence", "dependsOn": [
+				"build",
+			],
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX__likeExit_exec_.sh"],
+//			"isBackground": true,
 			"options": {"cwd": "${workspaceFolder}"},
 			"osx"	: {"options": {"env": {"phpv": "74"}}}, // macports
 			"linux"	: {"options": {"env": {"phpbin_include": ".*"}}}, // Dockerfile decides version
+			"group": "build",
 		},
 		{
-			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
-//			"isBackground": true,
-			"dependsOn": "build",
+			"dependsOrder": "sequence", "dependsOn": [
+				"build",
+			],
 			"label": "launch main-vphpX__likeExit_fork_",
 			"type": "process", "command": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX__likeExit_fork_.sh"],
+//			"isBackground": true,
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
 		},
 		{
-			"group": "build",
 			"label": "build",
 			"type": "process", "command": "make",
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "build",
 		},
 		{
-			"group": "build",
 			"label": "clean",
 			"type": "process", "command": "make", "args": ["clean"],
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "build",
 		},
 		{
-			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
-			"label": "build with compiledb",
-			"type": "process", "command": "compiledb", "args": ["make"],
+			"label": "build with compiledb with mac python",
+			"type": "process", "command": "${env:HOME}/Library/Python/3.9/bin/compiledb", "args": ["make"],
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
 		},
 		{
-			"group": "build",
 			"label": "clean && build",
-			"dependsOn": [
+			"dependsOrder": "sequence", "dependsOn": [
 				"clean",
 				"build",
 			],
-			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+			"group": "build",
 		},
 		{
-			"group": "build",
-			"label": "clean && build with compiledb",
-			"dependsOn": [
+			"label": "clean && build with compiledb with mac python",
+			"dependsOrder": "sequence", "dependsOn": [
 				"clean",
-				"build with compiledb",
+				"build with compiledb with mac python",
 			],
-			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+			"group": "build",
 		},
 		{
-			"group": "build",
 			"label": "configure for php && clean && build",
-			"dependsOn": [
+			"dependsOrder": "sequence", "dependsOn": [
 				"configure for php",
 				"clean",
 				"build",
 			],
-			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+			"group": "build",
 		},
 		{
-			"group": "build",
-			"label": "configure for php && clean && build with compiledb",
-			"dependsOn": [
+			"label": "configure for php && clean && build with compiledb with mac python",
+			"dependsOrder": "sequence", "dependsOn": [
 				"configure for php",
 				"clean",
-				"build with compiledb",
+				"build with compiledb with mac python",
 			],
-			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+			"group": "build",
 		},
 		{
-			"group": "build",
 			"label": "configure for php",
 //			"type": "shell", "command": "PHP_AUTOCONF=/opt/local/bin/autoconf PHP_AUTOHEADER=/opt/local/bin/autoheader /opt/local/bin/phpize74 && ./configure",
 			"type": "shell", "command": "${env:HOME}/shell/library/script/various/vscode-helper .vscode/tasks/main.sh", // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "build",
 		},
 		{
-			"group": "build",
 			"label": "configure for php74 && clean && build",
-			"dependsOn": [
+			"dependsOrder": "sequence", "dependsOn": [
 				"configure for php74",
 				"clean",
 				"build",
 			],
-			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+			"group": "build",
 		},
 		{
-			"group": "build",
-			"label": "configure for php74 && clean && build with compiledb",
-			"dependsOn": [
+			"label": "configure for php74 && clean && build with compiledb with mac python",
+			"dependsOrder": "sequence", "dependsOn": [
 				"configure for php74",
 				"clean",
-				"build with compiledb",
+				"build with compiledb with mac python",
 			],
-			"dependsOrder": "sequence",
 			"type": "shell", "command": ": dependsOn finished",
+			"group": "build",
 		},
 		{
-			"group": "build",
 			"label": "configure for php74",
 //			"type": "shell", "command": "PHP_AUTOCONF=/opt/local/bin/autoconf PHP_AUTOHEADER=/opt/local/bin/autoheader /opt/local/bin/phpize74 && ./configure",
 			"type": "shell", "command": "${env:HOME}/shell/library/script/various/vscode-helper .vscode/tasks/main-php74.sh", // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 			"options": {"cwd": "${workspaceFolder}"},
+			"group": "build",
 		},
 /*		{
-			// "group": {"kind": "build", "isDefault": true},
-			"group": "build",
 			"label": "C/C++: clang build active file ver",
 			"detail": "Task generated by Debugger.",
 			"type": "cppbuild", "command": "/usr/bin/clang", "args": [
@@ -155,6 +155,8 @@
 			],
 			"options": {"cwd": "${fileDirname}"},
 			"problemMatcher": ["$gcc"],
+			// "group": {"kind": "build", "isDefault": true},
+			"group": "build",
 		},/**/
 	],
 }
