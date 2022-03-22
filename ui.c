@@ -33,6 +33,10 @@
 #	include <X11/Xlib.h>
 #endif
 
+#ifdef _WIN32
+#   define HAVE_STRUCT_TIMESPEC
+#endif
+
 #include <pthread.h>
 
 #include <classes/exceptions.h>
