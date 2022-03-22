@@ -11,6 +11,7 @@
 			"preLaunchTask": "vphp -K launch-task.php",
 //			"postDebugTask": "rm launch-task.php",
 			"env": {
+				// TODO TODOC elsewhere: I don't know how I got it working some month ago, but now I had to install (macports) socat and `run socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:${DISPLAY//:/\\:}` in the background (could also be scripted)
 				"XDEBUG_TRIGGER": "xdbg",
 				"VPHP_LIBRARIES_ROOTS": "${env:HOME}/shell/library/php/com/dyn_o_saur/bluelephant:${env:HOME}/shell/library/sysepos/Darwin/php:${env:HOME}/shell/library/php", // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
 				"PHP_LIBRARIES_ROOT": "${env:HOME}/shell/library/php", // sorry, but vscode stumps on resolving my shell env
@@ -60,8 +61,8 @@
 			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
 			"request": "attach", "type": "cppdbg", "MIMode": "lldb",
 			"preLaunchTask": "vphpX__likeExit_fork_",
-//			"processId": "${command:pickProcess}", // ! specified ? preLaunchTask executes as wanted but then "attach: property 'processId' needs to be specified" : variables resolves before running preLaunchTask is "as designed" so closing and locking issue fuck you very much https://github.com/microsoft/vscode/issues/75604#issuecomment-542644091
-			// and if related this ends up in some internals discussion so again fuck us, the users, very much: https://github.com/microsoft/vscode/issues/95162#issuecomment-667297694
+//			"processId": "${command:pickProcess}", // ! specified ? preLaunchTask executes as wanted but then "attach: property 'processId' needs to be specified" : variables resolves before running preLaunchTask is "as designed" so closing and locking issue f*ck you very much https://github.com/microsoft/vscode/issues/75604#issuecomment-542644091
+			// and if related this ends up in some internals discussion so again f*ck us, the users, very much: https://github.com/microsoft/vscode/issues/95162#issuecomment-667297694
 			"logging": {"engineLogging": true},
 		},
 		{

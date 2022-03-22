@@ -39,3 +39,10 @@
 /.cache
 /compile_commands.json
 /.docker/docker-compose.extend.local.yml
+# .docker/services/ui/win.ps1
+/.docker/services/ui/win-key.json
+# failed, stranded, & abandoned attempt
+/.docker/services/ui/Dockerfile-win
+/.docker/services/ui/ctx-1-local.sh
+/.docker/services/ui/ctx-1.go
+/.docker/services/ui/ctx-n.sh
