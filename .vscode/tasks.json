@@ -71,7 +71,7 @@
 			"label": "build with compiledb with mac python",
 			"type": "process", "command": "${env:HOME}/Library/Python/3.9/bin/compiledb", "args": ["make"],
 			"options": {"cwd": "${workspaceFolder}"},
-			"group": "none", // this ought to be the way to hide it from the command `Tasks: Run Task | @command: workbench.action.tasks.runTask`?
+			"group": "build",
 		},
 		{
 			"label": "clean && build",
