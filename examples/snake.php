@@ -1,4 +1,4 @@
-<?php
+<?php //phpcs:disable
 define ("PHP_UI_SECOND",    1000000);
 define ("PHP_UI_SNAKE_FPS", 30);
 
@@ -19,8 +19,10 @@ use UI\Draw\Color;
 use UI\Draw\Stroke;
 use UI\Draw\Matrix;
 
-use UI\Draw\Text\Font;
+use UI\Draw\Text\Layout;
 use UI\Draw\Text\Font\Descriptor;
+use UI\Draw\Text\Attributed;
+use UI\Draw\Text\Attributes\Color as ColorAttribute;
 
 use UI\Executor;
 
@@ -164,7 +166,7 @@ $snake = new class($box) extends Area{
 				case Key::Down: $head->y++; break;
 			}
 
-			if ($head->x < 0 || $head->x >= ($frameSize->width)/20 || 
+			if ($head->x < 0 || $head->x >= ($frameSize->width)/20 ||
 				$head->y < 0 || $head->y >= ($frameSize->height)/20) {
 				$this->newSnake($frameSize);
 				$this->newFood($frameSize);
@@ -194,7 +196,7 @@ $snake = new class($box) extends Area{
 			$tail->x = $head->x;
 			$tail->y = $head->y;
 
-			array_unshift($this->snake, $tail);		
+			array_unshift($this->snake, $tail);
 		}
 
 		foreach ($this->snake as $color => $body) {
@@ -234,7 +236,7 @@ $snake = new class($box) extends Area{
 
 	private function newFood(Size $size) {
 		$this->food = new Point(
-			floor(mt_rand(40, ($size->width ) - 20) / 20), 
+			floor(mt_rand(40, ($size->width ) - 20) / 20),
 			floor(mt_rand(40, ($size->height) - 20) / 20));
 
 		$this->colors[count($this->snake)] = $this->newColor();
@@ -255,26 +257,26 @@ $snake = new class($box) extends Area{
 	}
 
 	private function drawPause(Pen $pen, Size $size) {
-		$layout = new UI\Draw\Text\Layout(sprintf(
-			"Press space bar to play ...",
-			$this->level,
-			$this->score
-		), new Font(new Descriptor("arial", 12)), $size->width);
-
-		$layout->setColor(0x000000FF);
+		$layout = new Layout((new Attributed(sprintf(
+				"Press space bar to play ...",
+				$this->level,
+				$this->score
+			)))->setAttribute(new ColorAttribute(0x000000FF)),
+			new Descriptor("arial", 12), $size->width, UI\Draw\Text\Align\Left
+		);
 
 		$pen->write(new Point(20, 10), $layout);
 	}
 
 	private function drawScore(Pen $pen, Size $size) {
-		$layout = new UI\Draw\Text\Layout(sprintf(
-			"Level: %d Score: %d",
-			$this->level,
-			$this->score
-		), new Font(new Descriptor("arial", 12)), $size->width);
+		$layout = new Layout((new Attributed(sprintf(
+				"Level: %d Score: %d",
+				$this->level,
+				$this->score
+			)))->setAttribute(new ColorAttribute(0x000000FF)),
+			new Descriptor("arial", 12), $size->width, UI\Draw\Text\Align\Left
+		);
 
-		$layout->setColor(0x000000FF);
-	
 		$pen->write(new Point(20, 10), $layout);
 	}
 	

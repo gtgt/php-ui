@@ -61,6 +61,8 @@
 		<file name="control.h" role="src" />
 		<file name="descriptor.c" role="src" />
 		<file name="descriptor.h" role="src" />
+		<file name="attribute.c" role="src" />
+		<file name="attribute.h" role="src" />
 		<file name="attributed.c" role="src" />
 		<file name="attributed.h" role="src" />
 		<file name="ecombo.c" role="src" />
