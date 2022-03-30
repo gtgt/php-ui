@@ -109,7 +109,8 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_stroke_info, 0, 3, U
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Pen Pen::stroke(UI\Draw\Path path, UI\Draw\Brush with, UI\Draw\Stroke stroke)
-	   proto Pen Pen::stroke(UI\Draw\Path peth, UI\Draw\Color with, UI\Draw\Stroke stroke) */
+	   proto Pen Pen::stroke(UI\Draw\Path path, UI\Draw\Color with, UI\Draw\Stroke stroke)
+	   proto Pen Pen::stroke(UI\Draw\Path path, int with, UI\Draw\Stroke stroke) */
 PHP_METHOD(DrawPen, stroke)
 {
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
