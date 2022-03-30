@@ -21,7 +21,10 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/descriptor.h>
+#include <classes/attribute.h>
 #include <classes/attributed.h>
 
 zend_object_handlers php_ui_attributed_handlers;
@@ -72,9 +75,71 @@ PHP_METHOD(DrawTextAttributedString, __construct)
 	}
 } /* }}} */
 
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_attributed_get_string_info, 0, 0, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto string DrawTextAttributedString::getString(void) */
+PHP_METHOD(DrawTextAttributedString, getString) 
+{
+	php_ui_attributed_t *string = php_ui_attributed_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	RETURN_STRING(uiAttributedStringString(string->s));
+} /* }}} */
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_attributed_get_length_info, 0, 0, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto int Attributed::getLength(void) */
+PHP_METHOD(DrawTextAttributedString, getLength) 
+{
+	php_ui_attributed_t *string = php_ui_attributed_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	RETVAL_LONG(uiAttributedStringLen(string->s))
+} /* }}} */
+
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_attributed_set_attribute_info, 0, 1, UI\\Draw\\Text\\Attributed, 0)
+	ZEND_ARG_OBJ_INFO(0, attribute, UI\\Draw\\Text\\Attribute, 0)
+ZEND_END_ARG_INFO()
+
+// sets "in the byte range [start, end)" - ui.h
+/* {{{ proto Attributed Attributed::setAttribute(int start, int end, UI\Draw\Text\Attribute attribute) */
+PHP_METHOD(DrawTextAttributedString, setAttribute)
+{
+	php_ui_attributed_t *string = php_ui_attributed_fetch(getThis());
+	zend_bool full = 0;
+	size_t start = 0, end = 0;
+	zval *attribute = NULL;
+	php_ui_attribute_t *a;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|ll", &attribute, uiDrawTextAttribute_ce, &start, &end) != SUCCESS) {
+		return;
+	}
+
+	if (!end) {
+		end = uiAttributedStringLen(string->s);
+	}
+
+	a = php_ui_attribute_fetch(attribute);
+
+	uiAttributedStringSetAttribute(string->s, a->a, start, end);
+
+	RETURN_ZVAL(getThis(), 1, 0);
+} /* }}} */
+
 /* {{{ */
 const zend_function_entry php_ui_attributed_methods[] = {
-	PHP_ME(DrawTextAttributedString, __construct,             php_ui_attributed_construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextAttributedString, __construct,             php_ui_attributed_construct_info,     ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextAttributedString, getString,               php_ui_attributed_get_string_info,    ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextAttributedString, getLength,               php_ui_attributed_get_length_info,    ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextAttributedString, setAttribute,            php_ui_attributed_set_attribute_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 

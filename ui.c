@@ -79,13 +79,14 @@
 #include <classes/stroke.h>
 #include <classes/matrix.h>
 
+#include <classes/attribute.h>
+#include <classes/attributed.h>
 #include <classes/descriptor.h>
 #include <classes/layout.h>
 
 #define PHP_UI_LOOP	1<<0
 #define PHP_UI_WAIT	1<<1
 
-// hoping won't have to care about https://www.phpinternalsbook.com/php7/extensions_design/globals_management.html
 zend_fcall_info php_ui_should_quit_fci;
 zend_fcall_info_cache php_ui_should_quit_fcc;
 
@@ -243,9 +244,10 @@ PHP_MINIT_FUNCTION(ui)
 	PHP_MINIT(UI_DrawStroke)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawMatrix)(INIT_FUNC_ARGS_PASSTHRU);
 
+	PHP_MINIT(UI_DrawTextAttribute)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawTextAttributedString)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(UI_DrawTextFontDescriptor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(UI_DrawTextLayout)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(UI_DrawTextFontDescriptor)(INIT_FUNC_ARGS_PASSTHRU);
 
 	php_ui_control_finalize();
 

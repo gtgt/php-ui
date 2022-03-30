@@ -18,8 +18,8 @@ use UI\Draw\Brush;
 use UI\Draw\Stroke;
 use UI\Draw\Matrix;
 
-use UI\Draw\Text\Layout;
 use UI\Draw\Text\Attributed;
+use UI\Draw\Text\Layout;
 
 $window = new Window("libui Histogram Example", new Size(640, 480), true);
 
@@ -117,8 +117,8 @@ $histogram = new class($dataSources) extends Area {
 		$pen->stroke($path, $brush, $stroke);
 
 		$layout = new Layout(new Attributed(sprintf(
-			"Drawn in %.5f seconds", 
-				microtime(true) - $start)),
+				"Drawn in %.5f seconds", 
+					microtime(true) - $start)),
 			$this->font->getFont(),
 			$clipSize->width,
 			UI\Draw\Text\Align\Left

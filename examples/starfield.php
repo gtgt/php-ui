@@ -1,4 +1,4 @@
-<?php
+<?php //phpcs:disable
 use UI\Window;
 use UI\Point;
 use UI\Size;
@@ -34,9 +34,7 @@ $win = new class("Starfield", new Size(640, 480), false) extends Window {
 $box = new Box(Box::Vertical);
 $win->add($box);
 
-$font = new UI\Draw\Text\Font(
-	new UI\Draw\Text\Font\Descriptor("arial", 12)			
-);
+$font = new UI\Draw\Text\Font\Descriptor("arial", 12);
 
 $stars = new class($box, 1024, 64, $font) extends Area {
 
@@ -104,14 +102,14 @@ $stars = new class($box, 1024, 64, $font) extends Area {
 		$now = time();
 		@$this->frames[$now]++;
 
-		$layout = new UI\Draw\Text\Layout(sprintf(
-			"%d fps",
-			isset($this->frames[$now - 1]) ? 
-				$this->frames[$now-1] : $this->frames[$now]
-		), $this->font, $size->width);
+		$layout = new UI\Draw\Text\Layout((new UI\Draw\Text\Attributed(sprintf(
+				"%d fps",
+				isset($this->frames[$now - 1]) ? 
+					$this->frames[$now-1] : $this->frames[$now]
+			)))->setAttribute(new UI\Draw\Text\Attributes\Color(0xFFFFFFFF)),
+			$this->font, $size->width, UI\Draw\Text\Align\Left
+		);
 
-		$layout->setColor(0xFFFFFFFF);
-	
 		$pen->write(new Point(20, 20), $layout);
 
 		unset($this->frames[$now-2]);
