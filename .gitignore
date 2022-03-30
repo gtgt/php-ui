@@ -44,3 +44,6 @@
 /.docker/services/ui/ctx-1-local.sh
 /.docker/services/ui/ctx-1.go
 /.docker/services/ui/ctx-n.sh
+# personal
+personal-dev-test.sh
+
