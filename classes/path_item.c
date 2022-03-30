@@ -37,7 +37,6 @@ zend_class_entry *uiDrawPathItem_ce;
 void php_ui_path_item_points(zval *zv, php_ui_path_item_t *path_item) {
 	zval point1, point2, point3;
 
-	// zv = ecalloc(sizeof(zval), 1);
 	array_init(zv);
 
 	switch (path_item->i->Type) {
@@ -92,18 +91,6 @@ void php_ui_path_item_points(zval *zv, php_ui_path_item_t *path_item) {
 	}
 }
 
-/*
-…_from seems only used by …_fetch (for point at least - which wouldn't be least, would it)
-…_create seldom example:
-	zend_object *cloned = 
-		php_ui_point_create(object->std.ce);
-…_construct was whats we's wantsuses:
-	php_ui_size_construct(return_value, (double) width, (double) height);
-... but we'll go for receiving the real struct // has-been: (but we'll copy it - field-wise until further)
-... ah php_ui_pen_construct does that too - phew
-... and area shows how to use it - yay
-*/
-
 zval *php_ui_path_item_construct(zval *path_item, uiDrawPathItem *pathItem)
 {
 	php_ui_path_item_t *i;
@@ -113,12 +100,6 @@ zval *php_ui_path_item_construct(zval *path_item, uiDrawPathItem *pathItem)
 	i = php_ui_path_item_fetch(path_item);
 
 	i->i = pathItem;
-
-//	zend_update_property_long(uiDrawPathItem_ce, path_item, ZEND_STRL("type"), i->i->Type);
-//
-//	zval *points;
-//	php_ui_path_item_points(points, i);
-//	zend_update_property(uiDrawPathItem_ce, path_item, ZEND_STRL("points"), points);
 
 	return path_item;
 }
