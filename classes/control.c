@@ -24,6 +24,7 @@
 #include <classes/_macro.h>
 
 #include <classes/exceptions.h>
+#include <classes/window.h>
 #include <classes/control.h>
 
 zend_class_entry *uiControl_ce;
@@ -70,12 +71,58 @@ zend_bool php_ui_control_set_parent(zval *child, zval *control) {
 	return 1;
 }
 
+zend_object* php_ui_control_window(zend_object *object) {
+	if (!object) {
+		return NULL;
+	}
+
+	do {
+		php_ui_control_t *control = php_ui_control_from(object);
+
+		if (instanceof_function(object->ce, uiWindow_ce)) {
+			return object;
+		}
+		
+		if (!control->parent) {
+			break;
+		}
+
+		object = php_ui_control_from(object)->parent;
+	} while (object);
+
+	return NULL;
+}
+
 void php_ui_control_finalize(void) {
 	uiControl_ce->ce_flags |= ZEND_ACC_FINAL;
 }
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_control_void_info, 0, 0, UI\\Control, 0)
 ZEND_END_ARG_INFO()
+
+#if PHP_VERSION_ID >= 70200
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_ui_control_get_window_info, 0, 0, UI\\Window, 1)
+#else
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_control_get_window_info, 0, 0, IS_OBJECT, "UI\\Window", 1)
+#endif
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Window Control::getWindow(void) */
+PHP_METHOD(Control, getWindow)
+{
+	php_ui_control_t *ctrl = php_ui_control_fetch(getThis());
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	if (!ctrl->parent) {
+		return;
+	}
+
+	ZVAL_OBJ(return_value, php_ui_control_window(ctrl->parent));
+	Z_ADDREF_P(return_value);
+} /* }}} */
 
 #if PHP_VERSION_ID >= 70200
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_ui_control_get_parent_info, 0, 0, UI\\Control, 1)
@@ -92,7 +139,7 @@ PHP_METHOD(Control, getParent)
 	if (zend_parse_parameters_none() != SUCCESS) {
 		return;
 	}
-	
+
 	if (!ctrl->parent) {
 		return;
 	}
@@ -275,6 +322,7 @@ PHP_METHOD(Control, destroy)
 
 /* {{{ */
 const zend_function_entry php_ui_control_methods[] = {
+	PHP_ME(Control, getWindow,   php_ui_control_get_window_info,      ZEND_ACC_PUBLIC)
 	PHP_ME(Control, getParent,   php_ui_control_get_parent_info,      ZEND_ACC_PUBLIC)
 	PHP_ME(Control, setParent,   php_ui_control_set_parent_info,      ZEND_ACC_PUBLIC)
 	PHP_ME(Control, getTopLevel, php_ui_control_get_top_level_info,   ZEND_ACC_PUBLIC)

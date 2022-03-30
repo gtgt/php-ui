@@ -110,28 +110,6 @@ void php_ui_set_call(zend_object *object, const char *name, size_t nlength, zend
 	fcc->called_scope = object->ce;
 }
 
-static inline zend_object* php_ui_top(zend_object *object) {
-	if (!object) {
-		return NULL;
-	}
-
-	do {
-		php_ui_control_t *control = php_ui_control_from(object);
-
-		if (instanceof_function(object->ce, uiWindow_ce)) {
-			return object;
-		}
-		
-		if (!control->parent) {
-			break;
-		}
-
-		object = php_ui_control_from(object)->parent;
-	} while (object);
-
-	return NULL;
-}
-
 int php_ui_call(zend_fcall_info *fci, zend_fcall_info_cache *fcc) {
 	int result = zend_call_function(fci, fcc);
 
@@ -144,7 +122,7 @@ _php_ui_call_zend_exception_handler:
 
 	if (result != SUCCESS) {
 		if (EG(exception)) {
-			zend_object *top = php_ui_top(fci->object);
+			zend_object *top = php_ui_control_window(fci->object);
 
 			if (top) {
 				php_ui_window_t *window = php_ui_window_from(top);
