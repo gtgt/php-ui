@@ -60,7 +60,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_ui_layout_construct_info, 0, 0, 3)
 	ZEND_ARG_TYPE_INFO(0, align, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto UI\Draw\Text\Layout UI\Draw\Text\Layout::__construct(UI\Draw\Text\String text, UI\Draw\Text\Font\Descriptor defaultFont, double width, int|UI\Draw\Text\Align align) */
+/* {{{ proto UI\Draw\Text\Layout UI\Draw\Text\Layout::__construct(UI\Draw\Text\Attributed text, UI\Draw\Text\Font\Descriptor defaultFont, double width, int|UI\Draw\Text\Align align) */
 PHP_METHOD(DrawTextLayout, __construct) 
 {
 	php_ui_layout_t *layout = php_ui_layout_fetch(getThis());
