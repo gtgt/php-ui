@@ -97,21 +97,21 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_rotate_info, 0, 2
 	ZEND_ARG_TYPE_INFO(0, amount, IS_DOUBLE, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto Matrix UI\Draw\Matrix::rotate(Point point, double amount) */
+/* {{{ proto Matrix UI\Draw\Matrix::rotate(Point point, double radians) */
 PHP_METHOD(DrawMatrix, rotate)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
 	zval *point = NULL;
 	php_ui_point_t *p;
-	double amount = 0;
+	double radians = 0;
 
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Od", &point, uiPoint_ce, &amount) != SUCCESS) {
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Od", &point, uiPoint_ce, &radians) != SUCCESS) {
 		return;
 	}
 
 	p = php_ui_point_fetch(point);
 
-	uiDrawMatrixRotate(&matrix->m, p->x, p->y, amount);
+	uiDrawMatrixRotate(&matrix->m, p->x, p->y, radians);
 
 	RETURN_ZVAL(getThis(), 1, 0)
 } /* }}} */
@@ -209,24 +209,26 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_transform_point_i
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Point, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto Matrix UI\Draw\Matrix::translate(Point point) */
+/* {{{ proto Point UI\Draw\Matrix::transformPoint(Point point) */
 PHP_METHOD(DrawMatrix, transformPoint)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
 	zval *point = NULL;
-	php_ui_point_t *p;
+	php_ui_point_t *p, *r;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &point, uiPoint_ce) != SUCCESS) {
 		return;
 	}
 
-//	p = php_ui_point_fetch(point);
+	p = php_ui_point_fetch(point);
 
 	object_init_ex(return_value, uiPoint_ce);
 
-	p = php_ui_point_fetch(return_value);
+	r = php_ui_point_fetch(return_value);
+	r->x = p->x;
+	r->y = p->y;
 
-	uiDrawMatrixTransformPoint(&matrix->m, &p->x, &p->y);
+	uiDrawMatrixTransformPoint(&matrix->m, &r->x, &r->y);
 
 	return;
 } /* }}} */
@@ -235,22 +237,26 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_transform_size_in
 	ZEND_ARG_OBJ_INFO(0, point, UI\\Size, 0)
 ZEND_END_ARG_INFO()
 
-/* {{{ proto Matrix UI\Draw\Matrix::translate(Point point) */
+/* {{{ proto Size UI\Draw\Matrix::translate(Size size) */
 PHP_METHOD(DrawMatrix, transformSize)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
 	zval *size = NULL;
-	php_ui_size_t *s;
+	php_ui_size_t *s, *r;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &size, uiSize_ce) != SUCCESS) {
 		return;
 	}
 
+	s = php_ui_size_fetch(size);
+
 	object_init_ex(return_value, uiSize_ce);
 
-	s = php_ui_size_fetch(return_value);
+	r = php_ui_size_fetch(return_value);
+	r->width = s->width;
+	r->height = s->height;
 
-	uiDrawMatrixTransformSize(&matrix->m, &s->width, &s->height);
+	uiDrawMatrixTransformSize(&matrix->m, &r->width, &r->height);
 
 	return;
 } /* }}} */
