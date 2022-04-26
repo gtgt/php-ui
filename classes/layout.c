@@ -21,11 +21,14 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/exceptions.h>
 #include <classes/descriptor.h>
 #include <classes/attributed.h>
 #include <classes/layout.h>
 #include <classes/color.h>
+#include <classes/size.h>
 
 zend_object_handlers php_ui_layout_handlers;
 
@@ -89,9 +92,28 @@ PHP_METHOD(DrawTextLayout, __construct)
 	layout->end = uiAttributedStringLen((uiAttributedString*)attributedString);
 } /* }}} */
 
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_layout_get_extents_info, 0, 0, UI\\Size, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Size Layout::getExtents(void) */
+PHP_METHOD(DrawTextLayout, getExtents) 
+{
+	php_ui_layout_t *layout = php_ui_layout_fetch(getThis());
+	double width = 0, height = 0;
+
+	if (zend_parse_parameters_none() != SUCCESS) {
+		return;
+	}
+
+	uiDrawTextLayoutExtents(layout->l, &width, &height);
+
+	php_ui_size_construct(return_value, width, height);
+} /* }}} */
+
 /* {{{ */
 const zend_function_entry php_ui_layout_methods[] = {
-	PHP_ME(DrawTextLayout, __construct, php_ui_layout_construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextLayout, __construct, php_ui_layout_construct_info,   ZEND_ACC_PUBLIC)
+	PHP_ME(DrawTextLayout, getExtents,  php_ui_layout_get_extents_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
