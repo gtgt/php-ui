@@ -21,8 +21,11 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/exceptions.h>
 #include <classes/common.h>
+#include <classes/matrix.h>
 
 zend_object_handlers php_ui_point_handlers;
 
@@ -135,6 +138,35 @@ PHP_METHOD(Point, setY)
 	point->y = y;
 } /* }}} */
 
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_point_transform_info, 0, 1, UI\\Point, 0)
+	ZEND_ARG_OBJ_INFO(0, matrix, UI\\Draw\\Matrix, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Point UI\Point::transform(UI\Draw\Matrix matrix) */
+PHP_METHOD(Point, transform)
+{
+	php_ui_point_t *point = php_ui_point_fetch(getThis());
+	zval *matrix = NULL;
+	php_ui_matrix_t *m;
+	php_ui_point_t *r;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &matrix, uiDrawMatrix_ce) != SUCCESS) {
+		return;
+	}
+
+	m = php_ui_matrix_fetch(matrix);
+
+	object_init_ex(return_value, uiPoint_ce);
+
+	r = php_ui_point_fetch(return_value);
+	r->x = point->x;
+	r->y = point->y;
+
+	uiDrawMatrixTransformPoint(&m->m, &r->x, &r->y);
+
+	return;
+} /* }}} */
+
 /* {{{ proto Point Point::at(double value)
 		     Point Point::at(UI\Size size) */
 PHP_METHOD(Point, at)
@@ -176,6 +208,7 @@ const zend_function_entry php_ui_point_methods[] = {
 	PHP_ME(Point, getY,        php_ui_point_get_point_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Point, setX,        php_ui_point_set_point_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Point, setY,        php_ui_point_set_point_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Point, transform,   php_ui_point_transform_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Point, at,          NULL,                        ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_FE_END
 }; /* }}} */
