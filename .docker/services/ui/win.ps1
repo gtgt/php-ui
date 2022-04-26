@@ -7,12 +7,20 @@
 		([Parameter(Position=1)][string[]	]	$actions
 		,[Parameter()						]	$runBase			=	$HOME
 		,[Parameter()						]	$runCode
-		=	{write-output																					"go with g; quit with q"	;
-			;&														  'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\cdb.exe'	`
-			 php									-c					'/opt/local/etc/php74'											`
-													-d	 extension_dir=C:\php\debug\ext													`
-													-d	 extension$( )=C:\php\debug\ext\php_ui.dll										`
-																		($args[0]+'/file/develop/git/ui/launch-task.php')				;}
+		=	{									mkdir		-force			"/home/vscode/.v/ui"									|out-null	;
+			;$var,								$path	=					 'PHP_LIBRARIES_ROOT'												`
+				,														(	$args[0]+'/shell/library/php'									)	;	[Environment]::SetEnvironmentVariable($var,				$path)
+			;$var										=					'VPHP_LIBRARIES_ROOTS'												;
+			;foreach(							$path in					arrgs																`
+																		(	$args[0]+'/shell/library/php/com/dyn_o_saur/bluelephant'		)	){	[Environment]::SetEnvironmentVariable($var
+					,																																[Environment]::GetEnvironmentVariable($var)+(get-item	$path).fullName+';','Process')} #cspell:ignore sysepos vphp
+			;eval(d('														$runCode'))
+			;write-output																					"go with g; quit with q"			;
+			;&														  'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\cdb.exe'			`
+			 php									-c					'/opt/local/etc/php74'													`
+													-d	 extension_dir=C:\php\debug\ext															`
+													-d	 extension$( )=C:\php\debug\ext\php_ui.dll												`
+																		(	$args[0]+'/file/develop/git/ui/launch-task.php')					;}
 		,[Parameter()][string[]				]	$resetKeys
 		,[Parameter()][string[]				]	$setKeys
 		,[Parameter()][switch				]	$forceActions
@@ -598,15 +606,7 @@
 			;									dependencies -depth 2	-chain																	`
 																			'C:\php\debug\ext\php_ui.dll'|select-string 'NOT_FOUND' -Context 666;
 #			;php -n -d extension_dir=C:\php\debug\ext -d extension=C:\php\debug\ext\php_ui.dll -r '\UI\quit();'
-			;									mkdir		-force			"/home/vscode/.v/ui"									|out-null	;
-			;$var,								$path	=					 'PHP_LIBRARIES_ROOT'												`
-				,														(	$runBase+'/shell/library/php'									)	;	[Environment]::SetEnvironmentVariable($var,				$path)
-			;$var										=					'VPHP_LIBRARIES_ROOTS'												;
-			;foreach(							$path in					arrgs																`
-																		(	$runBase+'/shell/library/php/com/dyn_o_saur/bluelephant'		)	){	[Environment]::SetEnvironmentVariable($var
-					,																																[Environment]::GetEnvironmentVariable($var)+(get-item	$path).fullName+';','Process')} #cspell:ignore sysepos vphp
 			;write-debug 'beg runCode'
-			;eval(d('														$runCode'))
 			;&																$runCode															`
 																			$runBase															;
 			;write-debug 'end runCode'
