@@ -21,8 +21,11 @@
 
 #include "php.h"
 
+#include <classes/_macro.h>
+
 #include <classes/exceptions.h>
 #include <classes/common.h>
+#include <classes/matrix.h>
 
 zend_object_handlers php_ui_size_handlers;
 
@@ -135,6 +138,35 @@ PHP_METHOD(Size, setHeight)
 	size->height = height;
 } /* }}} */
 
+PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_size_transform_info, 0, 1, UI\\Point, 0)
+	ZEND_ARG_OBJ_INFO(0, matrix, UI\\Draw\\Matrix, 0)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Size UI\Draw\Matrix::translate(Size size) */
+PHP_METHOD(Size, transform)
+{
+	php_ui_size_t *size = php_ui_size_fetch(getThis());
+	zval *matrix = NULL;
+	php_ui_matrix_t *m;
+	php_ui_size_t *r;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &matrix, uiDrawMatrix_ce) != SUCCESS) {
+		return;
+	}
+
+	m = php_ui_matrix_fetch(matrix);
+
+	object_init_ex(return_value, uiSize_ce);
+
+	r = php_ui_size_fetch(return_value);
+	r->width = size->width;
+	r->height = size->height;
+
+	uiDrawMatrixTransformSize(&m->m, &r->width, &r->height);
+
+	return;
+} /* }}} */
+
 /* {{{ proto Size Size::of(double value)
 		     Size Size::of(UI\Point point) */
 PHP_METHOD(Size, of)
@@ -176,6 +208,7 @@ const zend_function_entry php_ui_size_methods[] = {
 	PHP_ME(Size, getHeight,       php_ui_size_get_size_info,  ZEND_ACC_PUBLIC)
 	PHP_ME(Size, setWidth,        php_ui_size_set_size_info,  ZEND_ACC_PUBLIC)
 	PHP_ME(Size, setHeight,       php_ui_size_set_size_info,  ZEND_ACC_PUBLIC)
+	PHP_ME(Size, transform,       php_ui_size_transform_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Size, of,              NULL,                       ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_FE_END
 }; /* }}} */
