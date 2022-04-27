@@ -130,6 +130,10 @@ static zval* php_ui_path_item_read(zval *object, zval *member, int type, void **
 		return &EG(uninitialized_zval);
 	}
 
+	if (!path_item->i) { // eg $ php74 -d extension=modules/ui.so -r 'var_dump((new ReflectionClass("UI\\Draw\\PathItem"))->newInstanceWithoutConstructor()->type);'
+		return &EG(uninitialized_zval);
+	}
+
 	if (zend_string_equals_literal_ci(Z_STR_P(member), "type")) {
 		ZVAL_LONG(rv, path_item->i->Type)
 		return rv;
