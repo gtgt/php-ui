@@ -61,9 +61,9 @@
 																						-[	 12.5	 2		-]								-]	-\)	
 						-+				-' -> 'stroke					-\(										0x80FFFFFF						-\)	
 						-d	ui\\drawing							-\(	-a\(\$p$(															
-							),$(									   )\$az$(															
 							),$(									   )\$cp$(															
 							),$(									   )\$cz$(															
+							),$(									   )\$az$(															
 							),\$area$(																									)\)	-\{
 																	-_	\$p																	
 										-' -> 'write				-\(																	
@@ -94,7 +94,7 @@
 					-\;														-\$scptName																		
 					-=														-\$scptId -= phlot																
 					-\; -d	ui\\menu						-\(				-\$scptName																	-\)	
-					-\;	-d	ui\\window						-\(				-\$scptId	-[	640		480		-]	-,	true								
+					-\;	-d	ui\\window						-\(				-\$scptId	-[	640		480		-]	-,	true								# on macOS quiting from app menu or dock - neither saves frame - wh/as clicking the window-close-button does, hm..
 #																												-,	null	-,	false					
 						-d	ui\\Box::Vertical																				-,	false					
 							  "${beforeBox[@]}"																											
