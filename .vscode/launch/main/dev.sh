@@ -33,15 +33,18 @@
 							 -\$area																												-=		
 						-d	ui\\area								-\(		  20																		
 						-d	ui\\fillArea								-\(										0x111111FF							-\)	
-						-d	ui\\cross									-\(	  10				-ø				 0									
+						-d	ui\\cross									-\(						-ø													
+																			  10								 0									
 																						-[		-ø			-]	0x8080FFFF							-\)	
-#						-d	ui\\cross									-\(	  10				-ø				 0									
+#						-d	ui\\cross									-\(						-ø													
+#																			  10								 0									
 #									-[	 -[ -ø graduation			-]							-ø													#			liner-	-leveledSubFr.
 #																						-[	 2		 2		-]										#					-leveledSubFr:s
 #																								-ø				.05								-]	#		graduator-	-breadth
 #																												0x8080FFFF							-\)	
 						-,... -+
-						-d	ui\\crossWithAL								-\(	  10				-ø				 0									#	radius	point	radianShift
+						-d	ui\\crossWithAL								-\(						-ø													
+																			  10								 0									#	radius	point	radianShift
 									-[										Color				-=				0x8080FFFF						-]	#				attrs
 									-[	 -[ -ø graduation			-]							-ø													#		 layouter-	-leveledSubFr.
 																						-[	 2		 2		-]										#					-leveledSubFr:s
@@ -56,10 +59,37 @@
 																								-ø				.05								-]	#		graduator-	-breadth
 																												0x8080FFFF							-\)
 						-,... -+[ # circumventing PHP Fatal error:  Cannot use positional argument after argument unpacking
-						-d	ui\\pl\(\)	-' -> 'lines					-\([			-[	–1		–4		-]								
+						
+						-d	ui\\pl\(\)	-' -> 'lines					-\(	-[			-[	–1		–4		-]								
 																						-[	 1		–1		-]								
 																						-[	 12.5	 2		-]								-]	-\)	
 						-+				-' -> 'stroke					-\(										0x80FFFFFF						-\)	
+						-d	ui\\pl\(\)	-' -> 'circle					-\(				-[	 1		–1		-]									
+																							 .5													-\)	
+						-+				-' -> 'stroke					-\(										0x80FFFFFF						-\)	
+						
+#						-d	ui\\pl\(\)	-' -> 'segment					-\(																		
+#						-d	ui\\point										-\(			-[	–1		–4		-]								-\)	
+#						-d	ui\\point										-\(			-[	 1		–1		-]								-\)	-\)	
+#										-' -> 'circle					-\(				-[	 1		–1		-]									
+#																							 .5													-\)	
+#										-' -> 'segment					-\(																		
+#						-d	ui\\point										-\(			-[	 1		–1		-]								-\)	
+#						-d	ui\\point										-\(			-[	 12.5	 2		-]								-\)	-\)	
+#						-+				-' -> 'stroke					-\(										0x80FFFFFF						-\)	
+						
+##						-d	ui\\plot
+#						-d	ui\\pl\(\)	-' -> 'plot						-\(						-,true
+#																			-[				 .5												-]
+#																								-,true
+#																			-[					-,true circle
+#																								-ø
+#																						-[	 .5				-]								-]
+#																			-[			-[	–1		–4		-]								
+#																						-[	 1		–1		-]								
+#																						-[	 12.5	 2		-]								-]	-\)	
+#						-+				-' -> 'stroke					-\(										0x80FFFFFF						-\)	
+						
 						-d	ui\\drawing							-\(	-a\(\$p$(															
 							),$(									   )\$cp$(															
 							),$(									   )\$cz$(															
