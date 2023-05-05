@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/exceptions.h>
+
 #include <classes/menu.h>
 #include <classes/item.h>
 
@@ -82,7 +84,8 @@ PHP_METHOD(Menu, append)
 	}
 
 	if (ZEND_NUM_ARGS() > 1 && !instanceof_function(type, uiItem_ce)) {
-		/* throw */
+		php_ui_exception_ex(InvalidArgumentException,
+			"argument #2 (type) must be a valid class name");
 		return;
 	}
 
@@ -108,7 +111,8 @@ PHP_METHOD(Menu, appendCheck)
 	}
 
 	if (ZEND_NUM_ARGS() > 1 && !instanceof_function(type, uiItem_ce)) {
-		/* throw */
+		php_ui_exception_ex(InvalidArgumentException,
+			"argument #2 (type) must be a valid class name");
 		return;
 	}
 
@@ -139,7 +143,8 @@ PHP_METHOD(Menu, appendQuit)
 	}
 
 	if (ZEND_NUM_ARGS() > 1 && !instanceof_function(type, uiItem_ce)) {
-		/* throw */
+		php_ui_exception_ex(InvalidArgumentException,
+			"argument #1 (type) must be a valid class name");
 		return;
 	}
 
@@ -162,7 +167,8 @@ PHP_METHOD(Menu, appendPreferences)
 	}
 
 	if (ZEND_NUM_ARGS() > 1 && !instanceof_function(type, uiItem_ce)) {
-		/* throw */
+		php_ui_exception_ex(InvalidArgumentException,
+			"argument #1 (type) must be a valid class name");
 		return;
 	}
 
@@ -185,7 +191,8 @@ PHP_METHOD(Menu, appendAbout)
 	}
 
 	if (ZEND_NUM_ARGS() > 1 && !instanceof_function(type, uiItem_ce)) {
-		/* throw */
+		php_ui_exception_ex(InvalidArgumentException,
+			"argument #1 (type) must be a valid class name");
 		return;
 	}
 

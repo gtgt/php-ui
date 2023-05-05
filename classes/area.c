@@ -80,6 +80,10 @@ static void php_ui_area_mouse(uiAreaHandler *handler, uiArea *_area, uiAreaMouse
 		zval rv;
 		zval areaPoint, areaSize, flags;
 		zend_long modifiers = e->Modifiers;
+		zval clickCount;
+#ifdef LIBUI_HAS_AREA_MOUSE_EVENT_DELTAS
+		zval scrollDeltas;
+#endif
 
 		ZVAL_UNDEF(&rv);
 		area->mouse.fci.retval = &rv;
@@ -96,8 +100,14 @@ static void php_ui_area_mouse(uiAreaHandler *handler, uiArea *_area, uiAreaMouse
 		}
 
 		ZVAL_LONG(&flags, modifiers);
+		ZVAL_LONG(&clickCount, e->Count);
+#ifdef LIBUI_HAS_AREA_MOUSE_EVENT_DELTAS
+		php_ui_point_construct(&scrollDeltas, e->DeltaX, e->DeltaY);
 
-		zend_fcall_info_argn(&area->mouse.fci, 3, &areaPoint, &areaSize, &flags);
+		zend_fcall_info_argn(&area->mouse.fci, 5, &areaPoint, &areaSize, &flags, &clickCount, &scrollDeltas);
+#else
+		zend_fcall_info_argn(&area->mouse.fci, 4, &areaPoint, &areaSize, &flags, &clickCount);
+#endif
 
 		if (php_ui_call(&area->mouse.fci, &area->mouse.fcc) != SUCCESS) {
 			return;
@@ -111,6 +121,9 @@ static void php_ui_area_mouse(uiAreaHandler *handler, uiArea *_area, uiAreaMouse
 
 		zval_ptr_dtor(&areaPoint);
 		zval_ptr_dtor(&areaSize);
+#ifdef LIBUI_HAS_AREA_MOUSE_EVENT_DELTAS
+		zval_ptr_dtor(&scrollDeltas);
+#endif
 	}
 }
 
@@ -123,7 +136,16 @@ static int php_ui_area_key(uiAreaHandler *handler, uiArea *_area, uiAreaKeyEvent
 	if (area->key.fci.size) {
 		zval rv;
 		zval key, ext, flags;
-		zend_long modifiers = e->Modifiers;
+		// In the lubui source for all platforms "drop the current modifier from Modifiers" / "don't include … Modifiers"
+		// is explicitly/actively done. My only guess as to why would be what we can call the quirk on darwin
+		// ("sends this event on both key up and key down") and subsequent trick to "give us the up/down state",
+		// though I fail to see why that would be wanting for the aforementioned issue here.
+		// * https://github.com/andlabs/libui/blob/fea45b2d5b75839be0af9acc842a147c5cba9295/darwin/area.m#L297
+		// * https://github.com/andlabs/libui/blob/fea45b2d5b75839be0af9acc842a147c5cba9295/unix/area.c#L409
+		// * https://github.com/andlabs/libui/blob/fea45b2d5b75839be0af9acc842a147c5cba9295/windows/areaevents.cpp#L297
+		// But to get up/down events on only modifiers I need to add them back here (bitwise disjuncting)
+		// and hopefully adding to this bitmask won't break to much old usage.
+		zend_long modifiers = e->Modifiers | e->Modifier;
 
 		ZVAL_UNDEF(&rv);
 		area->key.fci.retval = &rv;
@@ -157,8 +179,32 @@ static int php_ui_area_key(uiAreaHandler *handler, uiArea *_area, uiAreaKeyEvent
 	return ret;
 }
 
-static void php_ui_area_crossed(uiAreaHandler *ah, uiArea *_area, int left) {}
-static void php_ui_area_drag(uiAreaHandler *ah, uiArea *a) {}
+static void php_ui_area_mouse_crossed(uiAreaHandler *handler, uiArea *a, int left) {
+	php_ui_area_t *area = 
+		php_ui_area_from_handler(handler);
+
+	if (area->crossed.fci.size) {
+		zval rv;
+		zval l;
+		ZVAL_LONG(&l, left);
+
+		ZVAL_UNDEF(&rv);
+		area->crossed.fci.retval = &rv;
+
+		zend_fcall_info_argn(&area->crossed.fci, 1, &l);
+
+		if (php_ui_call(&area->crossed.fci, &area->crossed.fcc) != SUCCESS) {
+			return;
+		}
+
+		zend_fcall_info_args_clear(&area->crossed.fci, 1);
+
+		if (Z_TYPE(rv) != IS_UNDEF) {
+			zval_ptr_dtor(&rv);
+		}
+	}
+}
+static void php_ui_area_drag_broken(uiAreaHandler *ah, uiArea *a) {}
 
 zend_object* php_ui_area_create(zend_class_entry *ce) {
 	php_ui_area_t *area = 
@@ -174,17 +220,40 @@ zend_object* php_ui_area_create(zend_class_entry *ce) {
 	area->h.MouseEvent = php_ui_area_mouse;
 	area->h.KeyEvent = php_ui_area_key;
 
-	area->h.MouseCrossed = php_ui_area_crossed;
-	area->h.DragBroken = php_ui_area_drag;
-
-	area->a = uiNewArea(&area->h);
+	area->h.MouseCrossed = php_ui_area_mouse_crossed;
+	area->h.DragBroken = php_ui_area_drag_broken;
 
 	php_ui_set_call(&area->std, ZEND_STRL("ondraw"), &area->draw.fci, &area->draw.fcc);
 	php_ui_set_call(&area->std, ZEND_STRL("onmouse"), &area->mouse.fci, &area->mouse.fcc);
+	php_ui_set_call(&area->std, ZEND_STRL("onmousecrossed"), &area->crossed.fci, &area->crossed.fcc);
 	php_ui_set_call(&area->std, ZEND_STRL("onkey"), &area->key.fci, &area->key.fcc);
 
 	return &area->std;
 }
+
+ZEND_BEGIN_ARG_INFO_EX(php_ui_area_construct_info, 0, 0, 0)
+	ZEND_ARG_OBJ_INFO(0, scrollingSize, UI\\Size, 1)
+ZEND_END_ARG_INFO()
+
+/* {{{ proto Area Area::__construct(Size scrolling = null) */
+PHP_METHOD(Area, __construct) 
+{
+	php_ui_area_t *area = php_ui_area_fetch(getThis());
+	zval *size = NULL;
+	php_ui_size_t *s;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "|O!", &size, uiSize_ce) != SUCCESS) {
+		return;
+	}
+
+	if (size) {
+		s = php_ui_size_fetch(size);
+
+		area->a = uiNewScrollingArea(&area->h, (int) s->width, (int) s->height);
+	} else {
+		area->a = uiNewArea(&area->h);
+	}
+} /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_area_redraw_info, 0, 0, UI\\Area, 0)
 ZEND_END_ARG_INFO()
@@ -267,9 +336,17 @@ ZEND_BEGIN_ARG_INFO_EX(php_ui_area_on_mouse_info, 0, 0, 3)
 	ZEND_ARG_OBJ_INFO(0, areaPoint, UI\\Point, 0)
 	ZEND_ARG_OBJ_INFO(0, areaSize, UI\\Size, 0)
 	ZEND_ARG_TYPE_INFO(0, flags, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, clickCount, IS_LONG, 0)
+#ifdef LIBUI_HAS_AREA_MOUSE_EVENT_DELTAS
+	ZEND_ARG_OBJ_INFO(0, scrollDeltas, UI\\Point, 0)
+#endif
 ZEND_END_ARG_INFO()
 
-/* {{{ proto void Area::onMouse(UI\Point areaPoint, UI\Size areaSize, int flags) */
+#ifdef LIBUI_HAS_AREA_MOUSE_EVENT_DELTAS
+/* {{{ proto void Area::onMouse(UI\Point areaPoint, UI\Size areaSize, int flags, [int clickCount, [UI\Point scrollDeltas]]) */
+#else
+/* {{{ proto void Area::onMouse(UI\Point areaPoint, UI\Size areaSize, int flags, [int clickCount]) */
+#endif
 PHP_METHOD(Area, onMouse)
 {
 
@@ -289,13 +366,14 @@ PHP_METHOD(Area, onKey)
 
 /* {{{ */
 const zend_function_entry php_ui_area_methods[] = {
+	PHP_ME(Area, __construct,  php_ui_area_construct_info,  ZEND_ACC_PUBLIC)
 	PHP_ME(Area, redraw,       php_ui_area_redraw_info,     ZEND_ACC_PUBLIC)
 	PHP_ME(Area, setSize,      php_ui_area_set_size_info,   ZEND_ACC_PUBLIC)
 	PHP_ME(Area, scrollTo,     php_ui_area_scroll_to_info,  ZEND_ACC_PUBLIC)
 
-	PHP_ME(Area, onDraw,       php_ui_area_on_draw_info,   ZEND_ACC_PROTECTED)
+	PHP_ME(Area, onDraw,       php_ui_area_on_draw_info,    ZEND_ACC_PROTECTED)
 	PHP_ME(Area, onMouse,      php_ui_area_on_mouse_info,   ZEND_ACC_PROTECTED)
-	PHP_ME(Area, onKey,        php_ui_area_on_key_info,   ZEND_ACC_PROTECTED)
+	PHP_ME(Area, onKey,        php_ui_area_on_key_info,     ZEND_ACC_PROTECTED)
 	PHP_FE_END
 }; /* }}} */
 

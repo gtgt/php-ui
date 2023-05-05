@@ -32,6 +32,10 @@ typedef struct _php_ui_area_t {
 		zend_fcall_info fci;
 		zend_fcall_info_cache fcc;
 	} mouse;
+	struct php_ui_area_mouse_crossed_t {
+		zend_fcall_info fci;
+		zend_fcall_info_cache fcc;
+	} crossed;
 	struct php_ui_area_key_t {
 		zend_fcall_info fci;
 		zend_fcall_info_cache fcc;

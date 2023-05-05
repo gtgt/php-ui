@@ -59,7 +59,7 @@ void php_ui_path_free(zend_object *o) {
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_ui_path_construct_info, 0, 0, 0)
-	ZEND_ARG_TYPE_INFO(0, mode, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, mode, IS_LONG, 0) // did try to allow null here in lieu of "default value constant name" UI\Draw\Path::Winding before realizing: PHP ReflectionParameter::isOptional() goes by ZEND_BEGIN_ARG_INFO_EX of required_num_args wh/as ::isDefaultValueAvailable() probably goes by non-extension PHP function declaration parameter default; and looking at the macros in zend_API.h (and zend_types.h), I guess php_ui_path_construct_info is some kind of fixed width table, and I find no way to add a name returned by ::getDefaultValueConstantName()
 ZEND_END_ARG_INFO()
 
 /* {{{ proto DrawPath UI\Draw\Path::__construct([int mode = UI\Draw\Path::Winding]) */
