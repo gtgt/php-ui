@@ -21,6 +21,8 @@
 
 #include "php.h"
 
+#include <classes/exceptions.h>
+
 #include <classes/control.h>
 #include <classes/multi.h>
 
@@ -90,7 +92,8 @@ PHP_METHOD(Multi, __construct)
 		break;
 
 		default:
-			/* throw */
+			php_ui_exception_ex(InvalidArgumentException,
+				"argument #1 (type) has invalid int value of %lld", type);
 			return;
 	}
 

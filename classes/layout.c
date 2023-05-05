@@ -122,11 +122,6 @@ PHP_MINIT_FUNCTION(UI_DrawTextLayout)
 {
 	zend_class_entry ce;
 
-	// casing like UI\Loop == PHP_UI_LOOP
-	REGISTER_NS_LONG_CONSTANT("UI\\Draw\\Text\\Align", "Left", uiDrawTextAlignLeft, CONST_CS|CONST_PERSISTENT);
-	REGISTER_NS_LONG_CONSTANT("UI\\Draw\\Text\\Align", "Center", uiDrawTextAlignCenter, CONST_CS|CONST_PERSISTENT);
-	REGISTER_NS_LONG_CONSTANT("UI\\Draw\\Text\\Align", "Right", uiDrawTextAlignRight, CONST_CS|CONST_PERSISTENT);
-
 	INIT_NS_CLASS_ENTRY(ce, "UI\\Draw\\Text", "Layout", php_ui_layout_methods);
 
 	uiDrawTextLayout_ce = zend_register_internal_class(&ce);
@@ -136,6 +131,18 @@ PHP_MINIT_FUNCTION(UI_DrawTextLayout)
 	
 	php_ui_layout_handlers.offset = XtOffsetOf(php_ui_layout_t, std);
 	php_ui_layout_handlers.free_obj = php_ui_layout_free;
+	
+	INIT_NS_CLASS_ENTRY(ce, "UI\\Draw\\Text", "Align", NULL);
+
+	uiDrawTextAlign_ce = zend_register_internal_class(&ce);
+	uiDrawTextAlign_ce->ce_flags |= ZEND_ACC_FINAL;
+
+	// casing like UI\Loop
+#define php_ui_register_align(c, n) zend_declare_class_constant_long(c, ZEND_STRL(#n), uiDrawTextAlign##n)
+	php_ui_register_align(uiDrawTextAlign_ce, Left);
+	php_ui_register_align(uiDrawTextAlign_ce, Center);
+	php_ui_register_align(uiDrawTextAlign_ce, Right);
+#undef php_ui_register_align
 	
 	return SUCCESS;
 } /* }}} */

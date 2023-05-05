@@ -81,7 +81,8 @@ PHP_METHOD(Box, __construct)
 		break;
 
 		default:
-			{ /* throw */ }
+			php_ui_exception_ex(InvalidArgumentException,
+				"argument #1 (orientation) has invalid int value of %lld", box->orientation);
 	}
 } /* }}} */
 

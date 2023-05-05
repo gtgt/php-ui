@@ -35,7 +35,7 @@
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 				{"name": "VPHP_LIBRARIES_ROOTS", "value": "${env:HOME}/shell/library/php/com/dyn_o_saur/bluelephant:${env:HOME}/shell/library/sysepos/Darwin/php:${env:HOME}/shell/library/php"}, // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
 				{"name": "PHP_LIBRARIES_ROOT", "value": "${env:HOME}/shell/library/php"}, // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
-				],
+			],
 //			"program": "/opt/local/bin/php74", // trying to hook into `llvm-dwarfdump sapi/cli/php_cli.o`:
 //			"program": "/opt/local/var/macports/build/_opt_local_var_macports_sources_rsync.macports.org_macports_release_tarballs_ports_lang_php/php74/work/php-7.4.27/sapi/cli/php",
 			"program": "/usr/local/bin/php", // this works in devcontainer, so i'll try to link here when needed locally (host @ devctr) again
@@ -68,13 +68,13 @@
 		{
 			"name": "INVALID: Launch via miDebuggerPath: vscode-helper main-vphpX__likeExit_exec_lldb_mi_helper_.sh",
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
-			"preLaunchTask": "make",
+			"preLaunchTask": "build",
 			"cwd": "${workspaceFolder}",
 			"environment": [ // these are not set for miDebuggerPath so no need setting TERM=xterm-256color
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 				{"name": "phpv", "value": "74"}, // macports (Darwin), not Linux
 //				{"name": "phpbin_include", "value": ".*"}, // Linux, not macports (Darwin)
-				],
+			],
 //			"program": "/usr/bin/read", "args": ["-pText\nTest:"],
 			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
 			"miDebuggerPath": "${env:HOME}/shell/library/script/various/vscode-helper", // remember chmod on perms err // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
@@ -95,13 +95,13 @@ The program '/usr/bin/read' has exited with code 42 (0x0000002a). */
 		{
 			"name": "INVALID: Launch via vscode-helper main.sh", // cause script as program makes lldb fail to find binary data
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
-			"preLaunchTask": "make",
+			"preLaunchTask": "build",
 			"cwd": "${workspaceFolder}",
 			"environment": [ // these are not set for miDebuggerPath so no need setting TERM=xterm-256color
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 				{"name": "phpv", "value": "74"}, // macports (Darwin), not Linux
 //				{"name": "phpbin_include", "value": ".*"}, // Linux, not macports (Darwin)
-				],
+			],
 			"program": "${env:HOME}/shell/library/script/various/vscode-helper", "args": [".vscode/launch/main-vphpX.sh"], // cause-of: vscode stumps on resolving my shell env so I need to source ~/.bash_profile_paths
 			"logging": { /* $ ~/.vscode/extensions/ms-vscode.cpptools-1.7.1/debugAdapters/bin/OpenDebugAD7 --help # …
 --trace: print the requests coming from VS Code to the console.
@@ -113,15 +113,58 @@ The program '/usr/bin/read' has exited with code 42 (0x0000002a). */
 			}
 		},
 		{
-			"name": "Launch php74 examples/histogram.php",
+			"name": "Launch personal php74 shell script php-dump-stub.php in lldb",
+			"request": "launch", "type": "lldb",
+			"preLaunchTask": "build",
+			"cwd": "${workspaceFolder}",
+			"env": {
+//				"XDEBUG_TRIGGER": "xdbg",
+				"PHP_LIBRARIES_ROOT": "${env:HOME}/shell/library/php", // sorry, but vscode stumps on resolving my shell env
+			},
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
+			"args": [
+				"-d", "extension=modules/ui.so",
+				"${env:HOME}/shell/library/script/various/php-dump-stub.php",
+				"--extension", "ui"
+			],
+		},
+		{
+			"name": "Launch personal php74 shell script php-dump-stub.php in cppdbg",
 			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
-			"preLaunchTask": "make",
+			"preLaunchTask": "build",
+			"cwd": "${workspaceFolder}",
+			"environment": [ // these are not set for miDebuggerPath, so probably not tasks either, and thus, no need for env TERM=xterm-256color
+//				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
+				{"name": "PHP_LIBRARIES_ROOT", "value": "${env:HOME}/shell/library/php"}, // sorry, but again, vscode stumps on resolving my shell env, and afaik there's no way to launch lldb via script (including tries using miDebuggerPath)
+			],
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
+			"args": [
+				"-d", "extension=modules/ui.so",
+				"${env:HOME}/shell/library/script/various/php-dump-stub.php",
+				"--extension", "ui"
+			],
+		},
+		{
+			"name": "Launch php74 examples/histogram.php in cppdbg",
+			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
+			"preLaunchTask": "build",
 			"cwd": "${workspaceFolder}",
 			"environment": [
 				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
 			],
 			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
-			"args": ["-dextension=modules/ui.so", "examples/histogram.php"],
+			"args": ["-d", "extension=modules/ui.so", "examples/histogram.php"],
+		},
+		{
+			"name": "Launch php74 examples/histogram.php in lldb",
+			"request": "launch", "type": "cppdbg", "MIMode": "lldb",
+			"preLaunchTask": "build",
+			"cwd": "${workspaceFolder}",
+			"environment": [
+				{"name": "XDEBUG_TRIGGER", "value": "xdbg"},
+			],
+			"program": "/opt/local/bin/php74", // abs cause-of: vscode stumps on resolving my shell env
+			"args": ["-d", "extension=modules/ui.so", "examples/histogram.php"],
 		},
 		{
 			"name": "Listen for Xdebug",
