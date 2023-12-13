@@ -33,7 +33,7 @@ zend_class_entry *uiAttributedString_ce;
 zend_class_entry *uiDrawTextAlign_ce;
 
 zend_object* php_ui_attributed_create(zend_class_entry *ce) {
-	php_ui_attributed_t *string = 
+	php_ui_attributed_t *string =
 		(php_ui_attributed_t*) ecalloc(1, sizeof(php_ui_attributed_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&string->std, ce);
@@ -59,7 +59,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_ui_attributed_construct_info, 0, 0, 1)
 ZEND_END_ARG_INFO()
 
 /* {{{ proto UI\Draw\Text\Attributed UI\Draw\Text\Attributed::__construct(string text) */
-PHP_METHOD(DrawTextAttributedString, __construct) 
+PHP_METHOD(DrawTextAttributedString, __construct)
 {
 	php_ui_attributed_t *string = php_ui_attributed_fetch(getThis());
 	zend_string *text = NULL;
@@ -79,7 +79,7 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_attributed_get_string_info
 ZEND_END_ARG_INFO()
 
 /* {{{ proto string DrawTextAttributedString::getString(void) */
-PHP_METHOD(DrawTextAttributedString, getString) 
+PHP_METHOD(DrawTextAttributedString, getString)
 {
 	php_ui_attributed_t *string = php_ui_attributed_fetch(getThis());
 
@@ -94,7 +94,7 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_attributed_get_length_info
 ZEND_END_ARG_INFO()
 
 /* {{{ proto int Attributed::getLength(void) */
-PHP_METHOD(DrawTextAttributedString, getLength) 
+PHP_METHOD(DrawTextAttributedString, getLength)
 {
 	php_ui_attributed_t *string = php_ui_attributed_fetch(getThis());
 
@@ -102,7 +102,7 @@ PHP_METHOD(DrawTextAttributedString, getLength)
 		return;
 	}
 
-	RETVAL_LONG(uiAttributedStringLen(string->s))
+	RETVAL_LONG(uiAttributedStringLen(string->s));
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_attributed_set_attribute_info, 0, 1, UI\\Draw\\Text\\Attributed, 0)
@@ -144,7 +144,7 @@ const zend_function_entry php_ui_attributed_methods[] = {
 }; /* }}} */
 
 /* {{{ */
-PHP_MINIT_FUNCTION(UI_DrawTextAttributedString) 
+PHP_MINIT_FUNCTION(UI_DrawTextAttributedString)
 {
 	zend_class_entry ce;
 
@@ -154,10 +154,10 @@ PHP_MINIT_FUNCTION(UI_DrawTextAttributedString)
 	uiAttributedString_ce->create_object = php_ui_attributed_create;
 
 	memcpy(&php_ui_attributed_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-	
+
 	php_ui_attributed_handlers.offset = XtOffsetOf(php_ui_attributed_t, std);
 	php_ui_attributed_handlers.free_obj = php_ui_attributed_free;
-	
+
 	return SUCCESS;
 } /* }}} */
 #endif

@@ -32,7 +32,7 @@ zend_object_handlers php_ui_matrix_handlers;
 zend_class_entry *uiDrawMatrix_ce;
 
 zend_object* php_ui_matrix_create(zend_class_entry *ce) {
-	php_ui_matrix_t *matrix = 
+	php_ui_matrix_t *matrix =
 		(php_ui_matrix_t*) ecalloc(1, sizeof(php_ui_matrix_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&matrix->std, ce);
@@ -65,7 +65,7 @@ PHP_METHOD(DrawMatrix, translate)
 
 	uiDrawMatrixTranslate(&matrix->m, p->x, p->y);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_scale_info, 0, 2, UI\\Draw\\Matrix, 0)
@@ -89,7 +89,7 @@ PHP_METHOD(DrawMatrix, scale)
 
 	uiDrawMatrixScale(&matrix->m, c->x, c->y, p->x, p->y);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_rotate_info, 0, 2, UI\\Draw\\Matrix, 0)
@@ -113,7 +113,7 @@ PHP_METHOD(DrawMatrix, rotate)
 
 	uiDrawMatrixRotate(&matrix->m, p->x, p->y, radians);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_skew_info, 0, 2, UI\\Draw\\Matrix, 0)
@@ -137,7 +137,7 @@ PHP_METHOD(DrawMatrix, skew)
 
 	uiDrawMatrixSkew(&matrix->m, p->x, p->y, a->x, a->y);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 #if PHP_VERSION_ID >= 70200
@@ -195,14 +195,14 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(DrawMatrix, invert)
 {
 	php_ui_matrix_t *matrix = php_ui_matrix_fetch(getThis());
-	
+
 	if (zend_parse_parameters_none() != SUCCESS) {
 		return;
 	}
 
 	uiDrawMatrixInvert(&matrix->m);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_matrix_transform_point_info, 0, 1, UI\\Point, 0)
@@ -313,7 +313,7 @@ const zend_function_entry php_ui_matrix_methods[] = {
 }; /* }}} */
 
 /* {{{ */
-PHP_MINIT_FUNCTION(UI_DrawMatrix) 
+PHP_MINIT_FUNCTION(UI_DrawMatrix)
 {
 	zend_class_entry ce;
 
@@ -323,7 +323,7 @@ PHP_MINIT_FUNCTION(UI_DrawMatrix)
 	uiDrawMatrix_ce->create_object = php_ui_matrix_create;
 
 	memcpy(&php_ui_matrix_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-	
+
 	php_ui_matrix_handlers.offset = XtOffsetOf(php_ui_matrix_t, std);
 
 	return SUCCESS;

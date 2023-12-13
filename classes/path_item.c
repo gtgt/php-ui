@@ -105,7 +105,7 @@ zval *php_ui_path_item_construct(zval *path_item, uiDrawPathItem *pathItem)
 }
 
 zend_object* php_ui_path_item_create(zend_class_entry *ce) {
-	php_ui_path_item_t *path_item = 
+	php_ui_path_item_t *path_item =
 		(php_ui_path_item_t*) ecalloc(1, sizeof(php_ui_path_item_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&path_item->std, ce);
@@ -135,7 +135,7 @@ static zval* php_ui_path_item_read(zval *object, zval *member, int type, void **
 	}
 
 	if (zend_string_equals_literal_ci(Z_STR_P(member), "type")) {
-		ZVAL_LONG(rv, path_item->i->Type)
+		ZVAL_LONG(rv, path_item->i->Type);
 		return rv;
 	}
 
@@ -166,15 +166,15 @@ static zval* php_ui_path_item_read(zval *object, zval *member, int type, void **
 	}
 
 	if (zend_string_equals_literal_ci(Z_STR_P(member), "radius")) {
-		ZVAL_LONG(rv, path_item->i->Radius)
+		ZVAL_LONG(rv, path_item->i->Radius);
 		return rv;
 	}
 	if (zend_string_equals_literal_ci(Z_STR_P(member), "start")) {
-		ZVAL_LONG(rv, path_item->i->Start)
+		ZVAL_LONG(rv, path_item->i->Start);
 		return rv;
 	}
 	if (zend_string_equals_literal_ci(Z_STR_P(member), "sweep")) {
-		ZVAL_LONG(rv, path_item->i->Sweep)
+		ZVAL_LONG(rv, path_item->i->Sweep);
 		return rv;
 	}
 
@@ -250,7 +250,7 @@ PHP_METHOD(PathItem, getPoint1)
 	php_ui_point_construct(return_value,
 		path_item->i->X1,
 		path_item->i->Y1);
-		
+
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_item_get_point2_info, 0, 0, UI\\Point, 0)

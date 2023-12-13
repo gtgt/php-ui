@@ -36,7 +36,7 @@ zend_class_entry *uiDrawPath_ce;
 extern int php_ui_call(zend_fcall_info *fci, zend_fcall_info_cache *fcc);
 
 zend_object* php_ui_path_create(zend_class_entry *ce) {
-	php_ui_path_t *path = 
+	php_ui_path_t *path =
 		(php_ui_path_t*) ecalloc(1, sizeof(php_ui_path_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&path->std, ce);
@@ -63,11 +63,11 @@ ZEND_BEGIN_ARG_INFO_EX(php_ui_path_construct_info, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 /* {{{ proto DrawPath UI\Draw\Path::__construct([int mode = UI\Draw\Path::Winding]) */
-PHP_METHOD(DrawPath, __construct) 
+PHP_METHOD(DrawPath, __construct)
 {
 	php_ui_path_t *path = php_ui_path_fetch(getThis());
 	zend_long mode = uiDrawFillModeWinding;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "|l", &mode) != SUCCESS) {
 		return;
 	}
@@ -80,12 +80,12 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_new_figure_info, 0,
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Path UI\Draw\Path::newFigure(Point point) */
-PHP_METHOD(DrawPath, newFigure) 
+PHP_METHOD(DrawPath, newFigure)
 {
 	php_ui_path_t *path = php_ui_path_fetch(getThis());
 	zval *point = NULL;
 	php_ui_point_t *p;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &point, uiPoint_ce) != SUCCESS) {
 		return;
 	}
@@ -94,7 +94,7 @@ PHP_METHOD(DrawPath, newFigure)
 
 	uiDrawPathNewFigure(path->p, p->x, p->y);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_draw_to_info, 0, 5, UI\\Draw\\Path, 0)
@@ -106,13 +106,13 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_draw_to_info, 0, 5,
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Path UI\Draw\Path::newFigureWithArc(Point point, double radius, double angle, double sweep, double negative) */
-PHP_METHOD(DrawPath, newFigureWithArc) 
+PHP_METHOD(DrawPath, newFigureWithArc)
 {
 	php_ui_path_t *path = php_ui_path_fetch(getThis());
 	zval *point = NULL;
 	php_ui_point_t *p;
 	double radius = 0, angle = 0, sweep = 0, negative = 0;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Odddd", &point, uiPoint_ce, &radius, &angle, &sweep, &negative) != SUCCESS) {
 		return;
 	}
@@ -121,7 +121,7 @@ PHP_METHOD(DrawPath, newFigureWithArc)
 
 	uiDrawPathNewFigureWithArc(path->p, p->x, p->y, radius, angle, sweep, negative);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_line_to_info, 0, 1, UI\\Draw\\Path, 0)
@@ -129,12 +129,12 @@ PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_line_to_info, 0, 1,
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Path UI\Draw\Path::lineTo(Point point) */
-PHP_METHOD(DrawPath, lineTo) 
+PHP_METHOD(DrawPath, lineTo)
 {
 	php_ui_path_t *path = php_ui_path_fetch(getThis());
 	zval *point = NULL;
 	php_ui_point_t *p;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &point, uiPoint_ce) != SUCCESS) {
 		return;
 	}
@@ -143,17 +143,17 @@ PHP_METHOD(DrawPath, lineTo)
 
 	uiDrawPathLineTo(path->p, p->x, p->y);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 /* {{{ proto Path UI\Draw\Path::arcTo(Point point, double radius, double angle, double sweep, double negative) */
-PHP_METHOD(DrawPath, arcTo) 
+PHP_METHOD(DrawPath, arcTo)
 {
 	php_ui_path_t *path = php_ui_path_fetch(getThis());
 	zval *point = NULL;
 	php_ui_point_t *p;
 	double radius = 0, angle = 0, sweep = 0, negative = 0;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Odddd", &point, uiPoint_ce, &radius, &angle, &sweep, &negative) != SUCCESS) {
 		return;
 	}
@@ -162,7 +162,7 @@ PHP_METHOD(DrawPath, arcTo)
 
 	uiDrawPathArcTo(path->p, p->x, p->y, radius, angle, sweep, negative);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 /* {{{ proto Path UI\Draw\Path::bezierTo(Point point, double radius, double angle, double sweep, double negative) */
@@ -172,7 +172,7 @@ PHP_METHOD(DrawPath, bezierTo)
 	zval *point = NULL;
 	php_ui_point_t *p;
 	double radius = 0, angle = 0, sweep = 0, negative = 0;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Odddd", &point, uiPoint_ce, &radius, &angle, &sweep, &negative) != SUCCESS) {
 		return;
 	}
@@ -181,7 +181,7 @@ PHP_METHOD(DrawPath, bezierTo)
 
 	uiDrawPathBezierTo(path->p, p->x, p->y, radius, angle, sweep, negative);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_close_figure_info, 0, 0, UI\\Draw\\Path, 0)
@@ -198,7 +198,7 @@ PHP_METHOD(DrawPath, closeFigure)
 
 	uiDrawPathCloseFigure(path->p);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_add_rectangle_info, 0, 2, UI\\Draw\\Path, 0)
@@ -223,7 +223,7 @@ PHP_METHOD(DrawPath, addRectangle)
 
 	uiDrawPathAddRectangle(path->p, p->x, p->y, s->width, s->height);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_path_end_info, 0, 0, UI\\Draw\\Path, 0)
@@ -240,7 +240,7 @@ PHP_METHOD(DrawPath, end)
 
 	uiDrawPathEnd(path->p);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 // Requires github.com/vike2000/libui
@@ -330,7 +330,7 @@ uiForEach php_ui_for_each_handler(uiDrawPathItem item, void *arg) {
 	zend_fcall_info_args_clear(&a.fci, 1); // UNSURE
 
 	if (Z_TYPE(rv) != IS_UNDEF) {
-		result = 
+		result =
 			(int) zval_get_long(&rv);
 		zval_ptr_dtor(&rv);
 	}
@@ -356,7 +356,7 @@ PHP_METHOD(DrawPath, forEach)
 
 	uiDrawPathForEach(path->p, php_ui_for_each_handler, &arg);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 #endif
 
@@ -384,7 +384,7 @@ const zend_function_entry php_ui_path_methods[] = {
 }; /* }}} */
 
 /* {{{ */
-PHP_MINIT_FUNCTION(UI_DrawPath) 
+PHP_MINIT_FUNCTION(UI_DrawPath)
 {
 	zend_class_entry ce;
 

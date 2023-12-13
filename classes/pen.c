@@ -39,7 +39,7 @@ zend_object_handlers php_ui_pen_handlers;
 zend_class_entry *uiDrawPen_ce;
 
 zend_object* php_ui_pen_create(zend_class_entry *ce) {
-	php_ui_pen_t *pen = 
+	php_ui_pen_t *pen =
 		(php_ui_pen_t*) ecalloc(1, sizeof(php_ui_pen_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&pen->std, ce);
@@ -55,7 +55,7 @@ zval* php_ui_pen_construct(zval *object, uiDrawContext *c) {
 	php_ui_pen_t *pen;
 
 	object_init_ex(object, uiDrawPen_ce);
-	
+
 	pen = php_ui_pen_fetch(object);
 	pen->c = c;
 
@@ -81,15 +81,15 @@ PHP_METHOD(DrawPen, fill)
 	}
 
 	if (Z_TYPE_P(with) == IS_OBJECT && instanceof_function(Z_OBJCE_P(with), uiDrawBrush_ce)) {
-		php_ui_brush_t *o = 
+		php_ui_brush_t *o =
 			php_ui_brush_fetch(with);
 
 		u = o->b;
 	} else {
 		u.Type = uiDrawBrushTypeSolid;
-		
+
 		if (!php_ui_color_set(with, &u.R, &u.G, &u.B, &u.A)) {
-			php_ui_exception_ex(InvalidArgumentException, 
+			php_ui_exception_ex(InvalidArgumentException,
 				"failed to set color for brush");
 			return;
 		}
@@ -99,7 +99,7 @@ PHP_METHOD(DrawPen, fill)
 
 	uiDrawFill(c->c, p->p, &u);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_stroke_info, 0, 3, UI\\Draw\\Pen, 0)
@@ -124,7 +124,7 @@ PHP_METHOD(DrawPen, stroke)
 	}
 
 	if (Z_TYPE_P(with) == IS_OBJECT && instanceof_function(Z_OBJCE_P(with), uiDrawBrush_ce)) {
-		php_ui_brush_t *o = 
+		php_ui_brush_t *o =
 			php_ui_brush_fetch(with);
 
 		u = o->b;
@@ -132,7 +132,7 @@ PHP_METHOD(DrawPen, stroke)
 		u.Type = uiDrawBrushTypeSolid;
 
 		if (!php_ui_color_set(with, &u.R, &u.G, &u.B, &u.A)) {
-			php_ui_exception_ex(InvalidArgumentException, 
+			php_ui_exception_ex(InvalidArgumentException,
 				"failed to set color for brush");
 			return;
 		}
@@ -143,7 +143,7 @@ PHP_METHOD(DrawPen, stroke)
 
 	uiDrawStroke(c->c, p->p, &u, &s->s);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_transform_info, 0, 1, UI\\Draw\\Pen, 0)
@@ -165,7 +165,7 @@ PHP_METHOD(DrawPen, transform)
 
 	uiDrawTransform(c->c, &m->m);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_clip_info, 0, 1, UI\\Draw\\Pen, 0)
@@ -178,7 +178,7 @@ PHP_METHOD(DrawPen, clip)
 	php_ui_pen_t *c = php_ui_pen_fetch(getThis());
 	zval *path = NULL;
 	php_ui_path_t *p;
-	
+
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &path, uiDrawPath_ce) != SUCCESS) {
 		return;
 	}
@@ -187,7 +187,7 @@ PHP_METHOD(DrawPen, clip)
 
 	uiDrawClip(c->c, p->p);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_save_info, 0, 0, UI\\Draw\\Pen, 0)
@@ -204,7 +204,7 @@ PHP_METHOD(DrawPen, save)
 
 	uiDrawSave(c->c);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_restore_info, 0, 0, UI\\Draw\\Pen, 0)
@@ -221,7 +221,7 @@ PHP_METHOD(DrawPen, restore)
 
 	uiDrawRestore(c->c);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 PHP_UI_ZEND_BEGIN_ARG_WITH_RETURN_OBJECT_INFO_EX(php_ui_pen_write_info, 0, 2, UI\\Draw\\Pen, 0)
@@ -240,13 +240,13 @@ PHP_METHOD(DrawPen, write)
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "OO", &_point, uiPoint_ce, &_layout, uiDrawTextLayout_ce) != SUCCESS) {
 		return;
 	}
-		
+
 	layout = php_ui_layout_fetch(_layout);
 	point = php_ui_point_fetch(_point);
 
 	uiDrawText(pen->c, layout->l, point->x, point->y);
 
-	RETURN_ZVAL(getThis(), 1, 0)
+	RETURN_ZVAL(getThis(), 1, 0);
 } /* }}} */
 
 /* {{{ */
@@ -262,7 +262,7 @@ const zend_function_entry php_ui_pen_methods[] = {
 }; /* }}} */
 
 /* {{{ */
-PHP_MINIT_FUNCTION(UI_DrawPen) 
+PHP_MINIT_FUNCTION(UI_DrawPen)
 {
 	zend_class_entry ce;
 
@@ -273,7 +273,7 @@ PHP_MINIT_FUNCTION(UI_DrawPen)
 	uiDrawPen_ce->ce_flags |= ZEND_ACC_FINAL;
 
 	memcpy(&php_ui_pen_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-	
+
 	php_ui_pen_handlers.offset = XtOffsetOf(php_ui_pen_t, std);
 
 	return SUCCESS;
