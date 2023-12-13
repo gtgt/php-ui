@@ -43,7 +43,7 @@ zval *php_ui_point_construct(zval *point, double x, double y)
 }
 
 zend_object* php_ui_point_create(zend_class_entry *ce) {
-	php_ui_point_t *point = 
+	php_ui_point_t *point =
 		(php_ui_point_t*) ecalloc(1, sizeof(php_ui_point_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&point->std, ce);
@@ -61,7 +61,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_ui_point_construct_info, 0, 0, 2)
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Point Point::__construct(string text) */
-PHP_METHOD(Point, __construct) 
+PHP_METHOD(Point, __construct)
 {
 	php_ui_point_t *point = php_ui_point_fetch(getThis());
 	double x = 0, y = 0;
@@ -82,7 +82,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_point_get_point_info, 0, 0, IS_DO
 ZEND_END_ARG_INFO()
 
 /* {{{ proto double Point::getX(void) */
-PHP_METHOD(Point, getX) 
+PHP_METHOD(Point, getX)
 {
 	php_ui_point_t *point = php_ui_point_fetch(getThis());
 
@@ -90,11 +90,11 @@ PHP_METHOD(Point, getX)
 		return;
 	}
 
-	RETURN_DOUBLE(point->x);	
+	RETURN_DOUBLE(point->x);
 } /* }}} */
 
 /* {{{ proto double Point::getY(void) */
-PHP_METHOD(Point, getY) 
+PHP_METHOD(Point, getY)
 {
 	php_ui_point_t *point = php_ui_point_fetch(getThis());
 
@@ -102,7 +102,7 @@ PHP_METHOD(Point, getY)
 		return;
 	}
 
-	RETURN_DOUBLE(point->y);	
+	RETURN_DOUBLE(point->y);
 } /* }}} */
 
 ZEND_BEGIN_ARG_INFO_EX(php_ui_point_set_point_info, 0, 0, 1)
@@ -152,9 +152,9 @@ PHP_METHOD(Point, at)
 
 	if (Z_TYPE_P(location) == IS_OBJECT && instanceof_function(Z_OBJCE_P(location), uiSize_ce)) {
 		php_ui_size_t *size = php_ui_size_fetch(location);
-		
+
 		object_init_ex(return_value, uiPoint_ce);
-		
+
 		point = php_ui_point_fetch(return_value);
 
 		point->x = size->width;
@@ -189,7 +189,7 @@ static int php_ui_point_operate(zend_uchar opcode, zval *result, zval *op1, zval
 static zend_object* php_ui_point_clone(zval *o) {
 	php_ui_point_t *object = php_ui_point_fetch(o);
 
-	zend_object *cloned = 
+	zend_object *cloned =
 		php_ui_point_create(object->std.ce);
 
 	php_ui_point_t *clone = php_ui_point_from(cloned);
@@ -197,7 +197,7 @@ static zend_object* php_ui_point_clone(zval *o) {
 	clone->x = object->x;
 	clone->y = object->y;
 
-	return cloned;	
+	return cloned;
 } /* }}} */
 
 /* {{{ */
@@ -222,7 +222,7 @@ static zval* php_ui_point_read(zval *object, zval *member, int type, void **cach
 
 	if (type == BP_VAR_RW || type == BP_VAR_W) {
 		php_ui_exception("Failed to fetch reference to %s, not allowed", Z_STRVAL_P(member));
-		return &EG(uninitialized_zval);	
+		return &EG(uninitialized_zval);
 	}
 
 	switch (Z_STRVAL_P(member)[0]) {
@@ -289,7 +289,7 @@ HashTable* php_ui_point_debug(zval *object, int *is_temp) {
 } /* }}} */
 
 /* {{{ */
-PHP_MINIT_FUNCTION(UI_Point) 
+PHP_MINIT_FUNCTION(UI_Point)
 {
 	zend_class_entry ce;
 
@@ -303,11 +303,15 @@ PHP_MINIT_FUNCTION(UI_Point)
 	zend_declare_property_double(uiPoint_ce, ZEND_STRL("y"), 0, ZEND_ACC_PUBLIC);
 
 	memcpy(&php_ui_point_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-	
+
 	php_ui_point_handlers.offset = XtOffsetOf(php_ui_point_t, std);
 	php_ui_point_handlers.do_operation = php_ui_point_operate;
 	php_ui_point_handlers.clone_obj = php_ui_point_clone;
+#if PHP_VERSION_ID < 80000
 	php_ui_point_handlers.compare_objects = php_ui_point_compare;
+#else
+	php_ui_point_handlers.compare = php_ui_point_compare;
+#endif
 	php_ui_point_handlers.read_property = php_ui_point_read;
 	php_ui_point_handlers.get_property_ptr_ptr = php_ui_point_noref;
 	php_ui_point_handlers.write_property = php_ui_point_write;

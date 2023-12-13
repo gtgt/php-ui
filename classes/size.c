@@ -43,7 +43,7 @@ zval *php_ui_size_construct(zval *size, double width, double height)
 }
 
 zend_object* php_ui_size_create(zend_class_entry *ce) {
-	php_ui_size_t *size = 
+	php_ui_size_t *size =
 		(php_ui_size_t*) ecalloc(1, sizeof(php_ui_size_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&size->std, ce);
@@ -61,7 +61,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_ui_size_construct_info, 0, 0, 2)
 ZEND_END_ARG_INFO()
 
 /* {{{ proto Size Size::__construct(double width, double height) */
-PHP_METHOD(Size, __construct) 
+PHP_METHOD(Size, __construct)
 {
 	php_ui_size_t *size = php_ui_size_fetch(getThis());
 	double width = 0, height = 0;
@@ -82,7 +82,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_ui_size_get_size_info, 0, 0, IS_DOUB
 ZEND_END_ARG_INFO()
 
 /* {{{ proto double Size::getWidth(void) */
-PHP_METHOD(Size, getWidth) 
+PHP_METHOD(Size, getWidth)
 {
 	php_ui_size_t *size = php_ui_size_fetch(getThis());
 
@@ -90,11 +90,11 @@ PHP_METHOD(Size, getWidth)
 		return;
 	}
 
-	RETURN_DOUBLE(size->width);	
+	RETURN_DOUBLE(size->width);
 } /* }}} */
 
 /* {{{ proto double Size::getHeight(void) */
-PHP_METHOD(Size, getHeight) 
+PHP_METHOD(Size, getHeight)
 {
 	php_ui_size_t *size = php_ui_size_fetch(getThis());
 
@@ -102,7 +102,7 @@ PHP_METHOD(Size, getHeight)
 		return;
 	}
 
-	RETURN_DOUBLE(size->height);	
+	RETURN_DOUBLE(size->height);
 } /* }}} */
 
 ZEND_BEGIN_ARG_INFO_EX(php_ui_size_set_size_info, 0, 0, 1)
@@ -154,7 +154,7 @@ PHP_METHOD(Size, of)
 		php_ui_point_t *point = php_ui_point_fetch(location);
 
 		object_init_ex(return_value, uiSize_ce);
-		
+
 		size = php_ui_size_fetch(return_value);
 
 		size->width = point->x;
@@ -189,7 +189,7 @@ static int php_ui_size_operate(zend_uchar opcode, zval *result, zval *op1, zval 
 static zend_object* php_ui_size_clone(zval *o) {
 	php_ui_size_t *object = php_ui_size_fetch(o);
 
-	zend_object *cloned = 
+	zend_object *cloned =
 		php_ui_size_create(object->std.ce);
 
 	php_ui_size_t *clone = php_ui_size_from(cloned);
@@ -197,7 +197,7 @@ static zend_object* php_ui_size_clone(zval *o) {
 	clone->width = object->width;
 	clone->height = object->height;
 
-	return cloned;	
+	return cloned;
 } /* }}} */
 
 /* {{{ */
@@ -218,7 +218,7 @@ static zval* php_ui_size_read(zval *object, zval *member, int type, void **cache
 
 	if (type == BP_VAR_RW || type == BP_VAR_W) {
 		php_ui_exception("Failed to fetch reference to %s, not allowed", Z_STRVAL_P(member));
-		return &EG(uninitialized_zval);	
+		return &EG(uninitialized_zval);
 	}
 
 	if (zend_string_equals_literal_ci(Z_STR_P(member), "width")) {
@@ -277,7 +277,7 @@ HashTable* php_ui_size_debug(zval *object, int *is_temp) {
 } /* }}} */
 
 /* {{{ */
-PHP_MINIT_FUNCTION(UI_Size) 
+PHP_MINIT_FUNCTION(UI_Size)
 {
 	zend_class_entry ce;
 
@@ -288,11 +288,15 @@ PHP_MINIT_FUNCTION(UI_Size)
 	uiSize_ce->ce_flags |= ZEND_ACC_FINAL;
 
 	memcpy(&php_ui_size_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-	
+
 	php_ui_size_handlers.offset = XtOffsetOf(php_ui_size_t, std);
 	php_ui_size_handlers.do_operation = php_ui_size_operate;
 	php_ui_size_handlers.clone_obj = php_ui_size_clone;
+#if PHP_VERSION_ID < 80000
 	php_ui_size_handlers.compare_objects = php_ui_size_compare;
+#else
+	php_ui_size_handlers.compare = php_ui_size_compare;
+#endif
 	php_ui_size_handlers.read_property = php_ui_size_read;
 	php_ui_size_handlers.get_property_ptr_ptr = php_ui_size_noref;
 	php_ui_size_handlers.write_property = php_ui_size_write;

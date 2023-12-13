@@ -89,7 +89,9 @@ void php_ui_set_call(zend_object *object, const char *name, size_t nlength, zend
 
 	fci->size = sizeof(zend_fcall_info);
 	fci->object = object;
+#if PHP_VERSION_ID < 80000
 	fci->no_separation = 1;
+#endif
 
 #if PHP_VERSION_ID < 70300
 	fcc->initialized = 1;
@@ -111,7 +113,7 @@ static inline zend_object* php_ui_top(zend_object *object) {
 		if (instanceof_function(object->ce, uiWindow_ce)) {
 			return object;
 		}
-		
+
 		if (!control->parent) {
 			break;
 		}
@@ -359,12 +361,12 @@ PHP_FUNCTION(UI_run)
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "|l", &flags) != SUCCESS) {
 		return;
 	}
-	
+
 	if (!(flags & PHP_UI_LOOP)) {
 		uiMain();
 		return;
 	}
-	
+
 	uiMainStep((flags & PHP_UI_WAIT) == PHP_UI_WAIT);
 } /* }}} */
 
